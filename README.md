@@ -4,7 +4,7 @@
 - [JavaScript](#javascript)
 - [CSS](#css)
 - [浏览器](#browser)
-- [计算机网络](#newwork)
+- [计算机网络](#network)
 - [React](#react)
 - [数据结构与算法](#algorithm)
 - [Webpack](#webpack)
