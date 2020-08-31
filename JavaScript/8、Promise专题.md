@@ -293,3 +293,5 @@ Promise.reject(thenable)
 
 -----------------
 ## <a id='diy'>**Promise的手写相关**</a>
+
+
