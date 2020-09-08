@@ -71,8 +71,69 @@ set.size // 56
 - `Set.prototype.keys()`：返回键名的遍历；
 - `Set.prototype.values()`：返回键值的遍历；
 - `Set.prototype.entries()`：返回键值对的遍历；
-- `Set.prototype.forEach()`：使用回调函数遍历每个成员。 
+- `Set.prototype.forEach()`：使用回调函数遍历每个成员。
 
 
 ---
 ## <a id='map'>**Map**</a>
+
+&emsp;&emsp;JavaScript的对象本质上是键值对集合，但只能用字符串当作键给使用带来了很大的限制。
+```js
+const a = {};
+const b = [1, 2, 3];
+const c = {name: 'caisiqi'};
+const d = [1, 2, {name: 'caisiqi'}];
+const e = document.getElementById('caisiqi');
+
+a[b] = 'akua';
+a[c] = 'mea';
+a[d] = 'arisu';
+a[e] = 'matsuri';
+
+a['1,2,3']    //  akua
+a['[object Object]']  //  mea
+a['1,2,[object Object]']    //  arisu
+a['[object HTMLDivElement]']    //  matsuri
+```
+&emsp;&emsp;可以看到，使用数组、对象或DOM作为对象的键，因为只能使用字符串，会被转换为`'1,2,3'、'[object Object]'、'[object HTMLDivElement]'`。
+
+&emsp;&emsp;ES6提供的Map数据结构就是为了解决这个问题。它类似对象，但键值对的“键”范围不限于字符串，各种类型的值（包括对象）都可以当作键。
+```js
+const a = new Map();
+const b = {name: 'caisiqi'};
+
+a.set(b, 16);
+a.get(b);   //  16
+a.has(b);   //  true
+a.delete(b);
+a.has(b);   //  false
+```
+&emsp;&emsp;Map作为构造函数，也可以接受一个数组作为参数，**该数组成员是一个个表示键值对的数组**。
+```js
+const a = new Map([
+    ['name', 'caisiqi'],
+    ['age', 16],
+]);
+
+a.has('name');  //  true
+a.has('age');   //  true
+a.get('name');  //  caisiqi
+a.get('age');   //  16
+```
+&emsp;&emsp;接受参数的过程实际上执行的是如下代码：
+```js
+const args = [
+    ['name', 'caisiqi'],
+    ['age', 16],
+];
+
+const a = new Map();
+
+args.forEach(([key, value]) => {
+    a.set(key, value);
+});
+```
+**注意：任何具有Iterator接口、且每个成员都是一个双元素的数组的数据结构都可以当作Map的构造函数的参数，所以Set和Map都可以作为Map的参数。**
+
+&emsp;&emsp;用get方法获取未知的键，得到的是`undefined`
+
