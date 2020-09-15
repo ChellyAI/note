@@ -135,5 +135,29 @@ args.forEach(([key, value]) => {
 ```
 **注意：任何具有Iterator接口、且每个成员都是一个双元素的数组的数据结构都可以当作Map的构造函数的参数，所以Set和Map都可以作为Map的参数。**
 
-&emsp;&emsp;用get方法获取未知的键，得到的是`undefined`
+&emsp;&emsp;用get方法获取未知的键，得到的是`undefined`。Map的键是跟内存地址绑定的，只要内存地址不一样，就视为两个键。如果键是一个简单类型的值，那么只要其严格相等，就会被视为一个键。**注意：NaN虽然不严格相等于自身，但也被视为同一个键。**
 
+### **`Map`实例的属性和方法**
+
+&emsp;&emsp;`Map`的实例有以下属性和操作方法：
+- `size`属性：返回`Map`结构成员总数；
+- `Map.prototype.set(key, value)`：`set`方法设置键名`key`的值为`value`，并返回整个`Map`结构，可以使用链式写法；
+```js
+const map = new Map()
+    .set(1, 'a')
+    .set(2, 'b')
+    .set(3, 'c');
+```
+- `Map.prototype.get(key)`：读取`key`对应的键值，如果找不到就返回`undefined`；
+- `Map.prototype.has(key)`：返回一个布尔值，表示某个键是否在当前`Map`对象中；
+- `Map.prototype.delete(key)`：删除某个键，返回`true`，失败则返回`false`；
+- `Map.prototype.clear()`：清除所有成员，没有返回值。
+
+&emsp;&emsp;`Map`结构有三个遍历器生成函数和一个遍历方法：
+
+- `Map.prototype.keys()`：返回键名的遍历器；
+- `Map.prototype.values()`：返回键值的遍历器；
+- `Map.prototype.entries()`：返回所有成员的遍历器；
+- `Map.prototype.forEach()`：遍历Map的所有成员。
+
+&emsp;&emsp;**注意：Map的遍历顺序就是插入顺序。**
