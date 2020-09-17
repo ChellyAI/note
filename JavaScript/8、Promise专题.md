@@ -13,7 +13,7 @@
 - [Promise的手写相关](#diy)
 -----------------
 
-## <a id='introduction'>**Promise的含义**</a>
+## <span id='introduction'>**Promise的含义**</span>
 
 &emsp;&emsp;`Promise`是异步编程的一种解决方案，ES6将其写入了语言标准。所谓`Promise`，简单来说就是一个容器，里面保存某个未来才结束的事件（通常为异步操作）**的结果**。
 
@@ -32,7 +32,7 @@
 （3）处于`pending`状态时，无法得知目前进展（刚开始还是快结束）。
 
 -----------------
-## <a id='usage'>**Promise**基本用法</a>
+## <span id='usage'>**Promise**基本用法</span>
 
 &emsp;&emsp;`Promise`对象是一个构造函数，用来生成Promise实例
 ```js
@@ -61,12 +61,12 @@ promise.then((value) => {
 })
 ```
 -----------------
-## <a id='then'>**Promise.prototype.then()**</a>
+## <span id='then'>**Promise.prototype.then()**</span>
 
 &emsp;&emsp;`then`方法返回的是一个新的`Promise`实例，可以采用链式写法，在其后面继续调用`then`。
 
 -----------------
-## <a id='catch'>**Promise.prototype.catch()**</a>
+## <span id='catch'>**Promise.prototype.catch()**</span>
 
 &emsp;&emsp;`Promise.prototype.catch()`方法用于发生错误时的回调函数，与`then(null, rejection)`或者`then(undefined, rejection)`相同。
 
@@ -83,12 +83,12 @@ getJSON('/posts.json')
 **注意**：最好不要用`then`方法的第二个参数里面定义Reject状态的回调函数，而是使用`catch`来处理，这样的话`then`方法如果出错也将会被catch所捕获，写法上也更接近同步写法`try/catch`。
 
 -----------------
-## <a id='finally'>**Promise.prototype.finally()**</a>
+## <span id='finally'>**Promise.prototype.finally()**</span>
 
 &emsp;&emsp;`finally`方法用于不管最后状态如何，都会执行的操作。`finally`方法的回调函数不接受任何参数，因此无法知道前面`Promise`的状态如何。
 
 -----------------
-## <a id='all'>**Promise.all()**</a>
+## <span id='all'>**Promise.all()**</span>
 
 &emsp;&emsp;`Promise.all()`用于将多个`Promise`实例包装成一个新的`Promise`实例。它接受一个数组作为参数。
 ```js
@@ -145,7 +145,7 @@ Promise.all([p1, p2])
 // Error: 报错了
 ```
 -----------------
-## <a id='race'>**Promise.race()**</a>
+## <span id='race'>**Promise.race()**</span>
 
 &emsp;&emsp;`Promise.race()`与`all`一样将多个`Promise`实例包装为一个新的`Promise`实例。
 ```js
@@ -158,7 +158,7 @@ const p = Promise.race([
 &emsp;&emsp;与`all`不同的是，只要参数中的实例有一个率先改变状态，`p`的状态就跟着改变，而那个实例的返回值就传递给`p`的回调函数。
 
 -----------------
-## <a id='allsettled'>**Promise.allSettled()**</a>
+## <span id='allsettled'>**Promise.allSettled()**</span>
 
 &emsp;&emsp;有时候我们不关心异步操作的结果，只是关心这些操作有没有结束，`Promise.all()`无法满足，于是`Promise.allSettled()`就来了。
 
@@ -181,7 +181,7 @@ allSettledPromise.then((results) => {
 可以使用简单的`Array.prorotype.filter()`筛选出成功或失败的请求，输出其结果或原因。
 
 -----------------
-## <a id='any'>**Promise.any()**</a>
+## <span id='any'>**Promise.any()**</span>
 
 &emsp;&emsp;`Promise.any()`方法与`Promise.race()`很像，但它不会因为某个`Promise`变成`rejected`而结束。只要参数实例有一个变成`fulfilled`状态，包装的实例就会变成`fulfilled`；如果所有参数实例都变成`rejected`状态，包装实例才会变成`rejected`状态。
 ```js
@@ -198,7 +198,7 @@ Promise.any([rejected, alsoRejected]).catch(function (results) {
 });
 ```
 -----------------
-## <a id='resolve'>**Promise.resolve()**</a>
+## <span id='resolve'>**Promise.resolve()**</span>
 
 &emsp;&emsp;如果需要将现有的对象转为`Promise`对象，`Promise.resolve()`方法就起这个作用。
 
@@ -263,7 +263,7 @@ console.log('one');
 // three
 ```
 -----------------
-## <a id='reject'>**Promise.reject()**</a>
+## <span id='reject'>**Promise.reject()**</span>
 
 &emsp;&emsp;`Promise.reject(reason)`方法也会返回一个新的`Promise`实例，该实例的状态为`rejected`。需要注意的是`Promise.reject()`方法的参数，会原封不动作为`reject`的理由变成后续方法的参数。
 ```js
@@ -292,6 +292,6 @@ Promise.reject(thenable)
 上面代码中，`Promise.reject`方法的参数是一个`thenable`对象，执行以后，后面`catch`方法的参数不是`reject`抛出的“出错了”这个字符串，而是`thenable`对象。
 
 -----------------
-## <a id='diy'>**Promise的手写相关**</a>
+## <span id='diy'>**Promise的手写相关**</span>
 
 
