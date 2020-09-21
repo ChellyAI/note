@@ -5,15 +5,9 @@
 - [四、http请求状态码](#httpqqztm)
 - [五、TCP和HTTP](#tcpandhttp)
 - [六、网络分层](#networklayers)
-- [](#)
-- [](#)
-- [](#)
-- [](#)
-- [](#)
-- [](#)
 
 ---
-### <a id="httpbwjg">一、http报文结构</a>
+### <span id="httpbwjg">一、http报文结构</span>
 
 1. 对于tcp而言（网上都这么写，对tcp而言，还能对谁而言？需要好好看看）：**起始行** + **头部** + **空行** + **实体**
 
@@ -40,7 +34,7 @@ http响应头结构：
 &emsp;&emsp;http请求由三个部分组成：**请求行**、**消息报头**、**请求正文**；
 
 ---
-### <a id="httpqqfs">二、http请求方式</a>
+### <span id="httpqqfs">二、http请求方式</span>
 http/1.0规定了三种请求方法：GET、POST、HEAD
 
 http/1.1新增了五种请求方法：OPTIONS、PUT、DELETE、TRACE、CONNECT
@@ -54,7 +48,7 @@ http/1.1新增了五种请求方法：OPTIONS、PUT、DELETE、TRACE、CONNECT
 - **CONNECT**：建立连接隧道，用于代理服务器
 
 ---
-### <a id="httpqqffdqb">三、请求方法的区别</a>
+### <span id="httpqqffdqb">三、请求方法的区别</span>
 - **GET和POST**
 1. 从参数角度来看，GET参数通过URL传递，POST参数放在Request Body中
 
@@ -75,7 +69,7 @@ http/1.1新增了五种请求方法：OPTIONS、PUT、DELETE、TRACE、CONNECT
 &emsp;&emsp;PUT和POST方法作用类似，不同在于PUT是幂等的。当多次发送相同的POST请求，服务器上的资源数目可能会增加；而PUT请求后服务器上的资源数目不会增加，每次PUT都会覆盖前一次PUT的资源
 
 ---
-### <a id="httpqqztm">四、HTTP请求状态码</a>
+### <span id="httpqqztm">四、HTTP请求状态码</span>
 - **信息响应**（100~199）
 
 &emsp;&emsp;1xx表示请求已被接受，需要继续处理
@@ -156,11 +150,11 @@ TRACE：消息正文包含服务器收到的请求消息
 当服务器作为网关，不能及时得到响应（个人理解为请求超时）时返回此错误代码
 ```
 ---
-### <a id="tcpandhttp">五、TCP和HTTP</a>
+### <span id="tcpandhttp">五、TCP和HTTP</span>
 &emsp;&emsp;TCP协议是传输层协议，主要解决数据如何在网络中传输，而HTTP是应用层协议，主要解决如何包装数据。
 
 ---
-### <a id="neworklayers">六、网络分层</a>
+### <span id="networklayers">六、网络分层</span>
 
 &emsp;&emsp;最初的网络分层是标准的七层模型，也就是所谓的OSI七层模型。具体如下；
 - 应用层
@@ -193,14 +187,3 @@ TRACE：消息正文包含服务器收到的请求消息
 
 （给个图片来作为补充）
 ![avatar](./http基础/layers.gif)
-
----
-### <a id="">七、</a>
-
-### <a id="">八、</a>
-
-### <a id="">九、</a>
-
-### <a id="">十、</a>
-
-

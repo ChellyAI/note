@@ -83,3 +83,8 @@ Cache-Control:max-age=3600
 ---
 ### **<span id="hcweizhi">**缓存位置**</span>**
 
+&emsp;&emsp;浏览器中缓存位置一共有四种，按照优先级从高到低排序如下：
+- Service Worker
+- Memory Cache
+- Disk Cache
+- Push Cache
