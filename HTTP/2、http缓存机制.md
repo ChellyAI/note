@@ -4,9 +4,10 @@
 - [强缓存](#qianghc)
 - [协商缓存](#xieshanghc)
 - [缓存位置](#hcweizhi)
+- [用户操作](#operate)
 
 ---
-### **<span id="qianyan">**前言**</span>**
+### <span id="qianyan">**前言**</span>
 &emsp;&emsp;HTTP缓存分为两种，一种是强缓存，另一种是协商缓存。缓存的主要作用是加快资源获取速度，提升用户体验，减少网络传输，缓解服务端压力。具体流程图如下：
 ![avatar](./http缓存机制/缓存流程.png)
 
@@ -16,7 +17,7 @@
     - 若资源更新，返回资源和200状态码
     - 否则返回304，告诉浏览器直接从缓存获取资源
 ---
-### **<span id="qianghc">**强缓存**</span>**
+### <span id="qianghc">**强缓存**</span>
 
 首先检查的强缓存阶段不需要发送请求，通过相应字段来进行判断。
 ```
@@ -50,7 +51,7 @@ Cache-Control:max-age=3600
 &emsp;&emsp;Pragma只有一个值，就是no-cache，效果与Cache-Control中一致，区别在于优先级最高。
 
 ---
-### **<span id="xieshanghc">**协商缓存**</span>**
+### <span id="xieshanghc">**协商缓存**</span>
 
 &emsp;&emsp;强缓存失效或不走强缓存后，浏览器在请求头中设置了ETag（If-None-Match)或者Last-Modified（If-Modified-Since）的时候，会将这两个属性值拿到服务端去验证是否命中协商缓存。若命中，会返回304状态码，加载浏览器缓存，并且响应头会设置ETag或Last-Modified属性。
 
@@ -81,10 +82,28 @@ Cache-Control:max-age=3600
 &emsp;&emsp;服务器有限考虑ETag。
 
 ---
-### **<span id="hcweizhi">**缓存位置**</span>**
+### <span id="hcweizhi">**缓存位置**</span>
 
 &emsp;&emsp;浏览器中缓存位置一共有四种，按照优先级从高到低排序如下：
 - Service Worker
 - Memory Cache
 - Disk Cache
 - Push Cache
+
+---
+### <span id='operate'>**用户操作**</span>
+用户操作 | Expires / Cache-Control | Last-Modified / ETag
+---|---|---
+地址栏回车 | 有效 | 有效
+页面链接跳转 | 有效 | 有效
+新开窗口 | 有效 | 有效
+前进后退 | 有效 | 有效
+cmd + R | 无效 | 有效
+cmd + shift + R | 无效 | 有效
+
+* 普通刷新<br>
+    cmd + R普通刷新时，绕过浏览器本地缓存，服务器端的协商缓存生效。
+* 强制刷新<br>
+    cmd + shift + R强制刷新时，绕过所有缓存，直接让服务器返回最新的资源。
+* 回车或转向<br>
+    在地址栏输入地址或跳转等操作时，所有缓存都生效。
