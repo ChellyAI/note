@@ -1,5 +1,11 @@
 ## **目录**
+- [前言](#forward)
 - [执行上下文栈](#stack)
+- [变量对象](#vo)
+- [作用域链](#scope)
+- [this](#this)
+- [闭包](#difficult)
+- [番外——词法作用域](#other)
 
 
 ---
@@ -57,6 +63,206 @@ ECStack.pop();
 ECStack.pop();
 ```
 ---
-## <span id="">**执行上下文——变量对象**</span>
+## <span id="vo">**执行上下文——变量对象**</span>
+
+&emsp;&emsp;执行上下文的代码分成两个阶段进行处理，分析和执行，也可以分为：
+1. 进入执行上下文
+2. 代码执行
+
+### 进入执行上下文，此时还没有执行代码，变量对象包括有
+1. 函数所有形参
+2. 函数声明
+3. 变量声明
+
+举个例子：
+```js
+function foo(a) {
+  var b = 2;
+  function c() {};
+  var d = function() {};
+
+  b = 3;
+}
+
+foo(1);
+```
+进入执行上下文后，此时的AO是：
+```js
+AO = {
+  arguments: {
+    0: 1,
+    length: 1,
+  },
+  a: 1,
+  b: undefined,
+  c: reference to function c(){},
+  d: undefined
+}
+```
+### 代码执行阶段顺序执行，修改变量对象，上例执行完后如下：
+```js
+AO = {
+  arguments: {
+    0: 1,
+    length: 1,
+  },
+  a: 1,
+  b: 3,
+  c: reference to function c(){},
+  d: reference to FunctionExpression "d"
+}
+```
+
+### **总结**
+1. 全局上下文的变量对象初始化是全局对象
+2. 函数上下文的变量对象初始化只包括Arguments对象
+3. 在进入执行上下文时会给变量对象添加形参、函数声明、变量声明等初始的属性值
+4. 代码执行阶段会再次修改变量对象的属性值
+
+---
+## <span id='scope'>**作用域链**</span>
+
+&emsp;&emsp;当查找变量时，会从当前上下文的**变量对象**中查找，如果没有找到就会从父级执行上下文的**变量对象**中查找。这样**由多个执行上下文的变量对象构成的链表就叫作用域链**。
+
+### **函数创建时**
+&emsp;&emsp;函数有一个内部属性[[scope]]，当函数创建的时候，就会保存所有父变量对象到其中，可以理解[[scope]]就是所有父变量对象的层级链，但[[scope]]并不代表完整的作用域链。
+```js
+function foo() {
+  function bar() {
+    //  some code
+  }
+}
+
+//  创建时，各自的[[scope]]为
+foo.[[scope]] = [
+  globalContext.VO,
+];
+bar.[[scope]] = [
+  fooContext.AO,
+  globalContext.VO,
+];
+```
+### **函数激活**
+&emsp;&emsp;当函数激活时，进入函数上下文，创建了函数的变量对象（活动对象）后，将其添加到作用链（即所有父变量对象的层级链）的前端，此时才构成一个完整的执行上下文作用域链，结构如下：
+```js
+Scope = [AO].concat([[scope]]);
+```
+
+&emsp;&emsp;可以这样理解，**执行上下文中的作用域scope**是由函数的[[scope]]属性初始化的，而函数的[[scope]]属性保存的是函数创建时词法层面上的父级们的VO（变量对象）的引用，**跟函数的执行顺序无关**。
+
+---
+## <span id='this'>**this**</span>
 
 &emsp;&emsp;
+
+&emsp;&emsp;非严格模式下this的值为undefined时，会被隐式转换为全局对象。
+
+### **几个题目**
+```js
+function Foo() {
+  getName = function() {
+    console.log(1);
+  };
+
+  return this;
+}
+
+function getName() {
+  console.log(5);
+}
+
+Foo().getName();  //  ?
+```
+```js
+function Foo() {
+  getName = function() {
+    console.log(1);
+  };
+
+  return this;
+}
+
+Foo.prototype.getName = function() {
+  console.log(3);
+}
+
+function getName() {
+  console.log(5);
+}
+
+new Foo().getName();  //  ?
+```
+---
+## <span id='difficult'>**闭包**</span>
+
+&emsp;&emsp;闭包就是能够访问自由变量的**函数**。
+
+&emsp;&emsp;自由变量是指在函数中使用的，但既不是函数参数也不是函数的局部变量的变量。
+
+简单例子：
+```js
+var a = 1;
+
+function foo() {
+  console.log(a);
+}
+
+foo();
+```
+&emsp;&emsp;`foo` + `a` 就构成了一个闭包。从技术角度来说，所有的JavaScript函数都是闭包，因为它们都在创建的时候就将上层上下文的数据保存下来了，哪怕是简单的全局变量也是如此，因为函数中访问全局变量就相当于访问自由变量，这个时候使用最外层的作用域。
+
+&emsp;&emsp;但实践上的闭包，指的是以下函数：
+1. 即使创建它的上下文已经销毁，它依然存在（比如，内部函数从父函数中返回）
+2. 在代码中引用了自由变量
+```js
+var scope = "global scope";
+
+function checkscope() {
+  var scope = "local scope";
+
+  function f() {
+    return scope;
+  }
+
+  return f;
+}
+
+var foo = checkscope();
+foo();
+```
+---
+## <span id='other'>**番外——词法作用域**</span>
+
+```js
+var fn = null;
+function foo() {
+    var a = 2;
+    function innnerFoo() { 
+        console.log(c); 
+        console.log(a);
+    }
+    fn = innnerFoo; 
+}
+
+function bar() {
+    var c = 100;
+    fn(); 
+}
+
+foo();
+bar();  //  ? ?
+```
+```js
+var value = 1;
+
+function foo() {
+    console.log(value);
+}
+
+function bar() {
+    var value = 2;
+    foo();
+}
+
+bar();  //  ?
+```
