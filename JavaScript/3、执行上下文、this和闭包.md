@@ -153,7 +153,7 @@ Scope = [AO].concat([[scope]]);
 ---
 ## <span id='this'>**this**</span>
 
-&emsp;&emsp;
+&emsp;&emsp;this的指向需要关注的是函数执行的括号前面到底是什么东西。
 
 &emsp;&emsp;非严格模式下this的值为undefined时，会被隐式转换为全局对象。
 
@@ -237,16 +237,16 @@ foo();
 var fn = null;
 function foo() {
     var a = 2;
-    function innnerFoo() { 
-        console.log(c); 
+    function innnerFoo() {
+        console.log(c);
         console.log(a);
     }
-    fn = innnerFoo; 
+    fn = innnerFoo;
 }
 
 function bar() {
     var c = 100;
-    fn(); 
+    fn();
 }
 
 foo();
