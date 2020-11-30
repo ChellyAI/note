@@ -62,7 +62,7 @@ http/1.1新增了五种请求方法：OPTIONS、PUT、DELETE、TRACE、CONNECT
 
 6. 从TCP角度来看，GET产生一个TCP数据包，浏览器会把http header和data一并发送，服务器响应200 OK并返回数据；POST产生两个TCP数据包，浏览器先发送http header，服务器响应100 continue，浏览器再发送data，服务器响应200 OK并返回数据（火狐只发送一次）
 
-7. 从幂等性的角度来看，GET是幂等的，而POST不是（幂等表示执行相同操作，结果也是相同）
+7. 从幂等性的角度来看，GET是幂等的，而POST不是
 
 - **PUT和POST**
 
