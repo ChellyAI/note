@@ -86,9 +86,33 @@ Set-Cookie: qwerty=219ffwef9w0f; Domain=baidu.com; Path=/; Expires=Wed; 30 Aug 2
 &emsp;&emsp;该属性可以让 `Cookie` 在跨站请求时不会被发送，从而可以组织跨站请求伪造攻击（CSRF）。
 
 它的属性值有三个：
-1. **Strict** 仅允许一方请求携带 `Cookie`，即浏览器将只发送相同站点请求的 `Cookie`，即当前网页 `URL` 与请求目标 `URL` 完全一致。
-2. **Lax** 允许部分第三方请求携带 `Cookie`。
-3. **None** 无论是否跨站都会发送 `Cookie`。
+1. **Strict** 最为严格，完全禁止第三方 `Cookie`，跨站点时任何情况下都不会发送 `Cookie`。仅允许一方请求携带 `Cookie`，即浏览器将只发送相同站点请求的 `Cookie`，即当前网页 `URL` 与请求目标 `URL` 完全一致。
+```http
+Set-Cookie: CookieName=CookieValue; SameSite=Strict;
+```
+2. **Lax** 允许部分第三方请求携带 `Cookie`。设置了 `Strict` 或 `Lax` 以后，基本就杜绝了 `CSRF` 攻击，前提是用户浏览器支持 `SameSite` 属性。
+```http
+Set-Cookie: CookieName=CookieValue; SameSite=Lax;
+```
+具体如下：
+|请求类型|示例|正常情况|Lax
+|----|------|---|---|
+|链接|`<a href="..."></a>`|发送|发送|
+|预加载|`<link rel="prerender" href="..." />`|发送|发送|
+|GET表单|`<form method="GET" action="...">`|发送|发送|
+|POST表单|`<form method="POST" action="...">`|发送|不发送|
+|iframe|`<iframe src="..."></iframe>`|发送|不发送
+|AJAX|$.get("...")|发送|不发送
+|Image|`<img src="...">`|发送|不发送
+
+3. **None** 无论是否跨站都会发送 `Cookie`。设置的前提是必须同时设置 `Secure` 属性（Cookie只能通过 HTTPS 协议发送），否则无效。
+```
+//  无效
+Set-Cookie: widget_session=abc123; SameSite=None;
+
+//  有效
+Set-Cookie: widget_session=abc123; SameSite=None; Secure
+```
 
 <font color="red">之前默认是 **None**，Chrome 80 后默认是 **Lax**</font>
 
