@@ -119,11 +119,70 @@ AO = {
 }
 ```
 
+### <font color="red">**注意**</font>
+```js
+//  第一段
+console.log(Foo); //  f Foo() {console.log(1)}
+function Foo() {
+  console.log(1);
+}
+
+console.log(Foo); //  f Foo() {console.log(1)}
+
+var Foo = function() {
+  console.log(2);
+}
+
+console.log(Foo); //  f Foo() {console.log(2)}
+
+//  第二段
+console.log(Foo); //  f Foo() {console.log(1)}
+
+var Foo = function() {
+  console.log(2);
+}
+
+console.log(Foo); //  f Foo() {console.log(2)}
+
+function Foo() {
+  console.log(1);
+}
+
+console.log(Foo); //  f Foo() {console.log(2)}
+
+//  第三段
+console.log(Foo); //  f Foo() {console.log(1)}
+
+function Foo() {
+  console.log(1);
+}
+
+console.log(Foo); //  f Foo() {console.log(1)}
+
+var Foo = 2;
+
+console.log(Foo); //  2
+
+//  第四段
+console.log(Foo); //  f Foo() {console.log(1)}
+
+var Foo = 2;
+
+console.log(Foo); //  2
+
+function Foo() {
+  console.log(1);
+}
+
+console.log(Foo); //  2
+```
+
 ### **总结**
 1. 全局上下文的变量对象初始化是全局对象
 2. 函数上下文的变量对象初始化只包括Arguments对象
 3. 在进入执行上下文时会给变量对象添加形参、函数声明、变量声明等初始的属性值
 4. 代码执行阶段会再次修改变量对象的属性值
+5. (**补充说明**)函数名如果跟用var声明的变量名相同，那么最终结果会是用var声明的变量
 
 ---
 ## <span id='scope'>**作用域链**</span>
