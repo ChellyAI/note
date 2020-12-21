@@ -222,6 +222,8 @@ Scope = [AO].concat([[scope]]);
 
 &emsp;&emsp;非严格模式下this的值为undefined时，会被隐式转换为全局对象。
 
+![this](./执行上下文、this和闭包/this.png)
+
 ### **几个题目**
 ```js
 function Foo() {
