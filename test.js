@@ -1,9 +1,6 @@
-var a = 10;  
-function test() {  
-    a = 100;  
-    console.log(a);  
-    console.log(this.a);  
-    var a;  
-    console.log(a); 
+var x = 1;
+if(var f = 2){
+    x += typeof f;
 }
-test();  
+
+console.log(x);
