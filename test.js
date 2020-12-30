@@ -10,7 +10,7 @@ const p1 = {
     school: 'cug',
 };
 
-bar.call(p1);
+// bar.call(p1);
 
 Function.prototype.call2 = function (obj = window, ...args) {
     const func = Symbol();
@@ -37,4 +37,42 @@ Function.prototype.bind2 = function(obj = window, ...args) {
     return obj[func];
 }
 
-bar.call2(p1);
+// bar.call2(p1);
+
+function myNew(func, ...restProps) {
+    const obj = new Object();
+
+    obj.__proto__ = func.prototype;
+
+    const result = func.apply(obj, restProps);
+
+    if (result && ( typeof (result) == 'object' || typeof (result) == 'function')) {
+        return result;
+    }
+    return obj;
+}
+
+function Person(name) {
+    this.name = name;
+}
+
+const child = myNew(Person, '雪ノ下雪乃');
+const child2 = new Person('涼宮ハルヒ');
+
+const arr = [1, 2, 3, 3, 4, 9, 5, 5, 4, 4, 2, 2, 1];
+
+function unique(arr) {
+    const result = [];
+
+    for (let i = 0; i < arr.length; i++) {
+      if (!result.includes(arr[i])) {
+        result.push(arr[i]);
+      }
+    }
+
+    return result;
+  }
+
+const result = unique(arr);
+
+console.log(result);
