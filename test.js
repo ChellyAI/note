@@ -76,3 +76,45 @@ function unique(arr) {
 const result = unique(arr);
 
 console.log(result);
+
+Function.prototype.call3 = function(obj = window, ...args) {
+    const key = Symbol('func');
+    obj[key] = this;
+    const props = [...args];
+
+    const result = obj[key](props);
+    delete obj[key];
+    return result;
+}
+
+function qwer(Constructor, ...args) {
+    let obj = {};
+    obj.__proto__ = Constructor.prototype;
+
+    const result = Constructor.call(obj, ...args);
+
+    if (typeof result === 'object') return result;
+    return obj;
+}
+
+function human(name) {
+    this.name = name;
+    this.age = 16;
+}
+
+const man = qwer(human, 'caisiqi');
+
+console.log(man);
+
+function debounce(func, delay) {
+    let timeoutId = 0;
+
+    return function(...args) {
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+        }
+        setTimeout(() => {
+            func.apply(this, args);
+        }, delay);
+    }
+}
