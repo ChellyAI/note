@@ -70,6 +70,8 @@
 
 [BFC详解看这里](https://www.zhangxinxu.com/wordpress/2015/02/css-deep-understand-flow-bfc-column-two-auto-layout/)
 
+[还可以看这里](https://www.cnblogs.com/lhb25/p/inside-block-formatting-ontext.html)
+
 &emsp;&emsp;W3C对BFC的定义如下：
 - 浮动元素和绝对定位元素
 - 非块级盒子的块级容器（inline-blocks,table-cells,table-captions)
