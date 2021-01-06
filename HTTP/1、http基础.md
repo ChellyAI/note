@@ -5,6 +5,7 @@
 - [四、http请求状态码](#httpqqztm)
 - [五、TCP和HTTP](#tcpandhttp)
 - [六、网络分层](#networklayers)
+- [七、HTTP和HTTPS区别](#http-https)
 
 ---
 ### <span id="httpbwjg">一、http报文结构</span>
@@ -182,8 +183,26 @@ TRACE：消息正文包含服务器收到的请求消息
 
 &emsp;&emsp;数据链路层在物理层提供的服务基础上，向网络层提供服务，它定义了单个链路上如何传输数据。
 
-
-
-
 （给个图片来作为补充）
 ![avatar](./http基础/layers.gif)
+
+---
+### <span id="http-https">七、HTTP和HTTPS的区别</span>
+
+&emsp;&emsp;HTTPS 相比 HTTPS 多了一个 S（Secure）安全性部分。实际上 HTTPS 并不是一个新的 应用层协议，它就是 HTTP + TLS/SSL 协议组合而成，而安全性保障就是 TLS/SSL 来做的。
+
+**TLS**：传输层安全 Transport Layer Security
+
+**SSL**：安全套接层 Secure Sockets Layer
+
+&emsp;&emsp;现在主流的版本是 TLS 1.2，之前的1.0、1.1都被认为是不安全的。
+
+那么具体有哪些区别呢？
+- HTTP 是明文传输协议，HTTPS 协议是由 SSL + HTTP 协议构建的可进行加密传输、身份认证的网络协议，比 HTTP 协议更安全
+- HTTPS 对搜索引擎更加友好，利于 SEO。（谷歌、百度优先索引 HTTPS 网页）
+- HTTPS 标准端口是 443，而 HTTP 标准端口是 80
+- HTTPS 需要用到 SSL 证书，而 HTTP 不用
+
+总而言之，主要作用有两个：
+1. 对数据进行加密，并建立一个信息安全通道，来保证传输过程中的数据安全
+2. 对网站服务器进行真实身份认证
