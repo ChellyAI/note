@@ -218,6 +218,10 @@ Scope = [AO].concat([[scope]]);
 ---
 ## <span id='this'>**this**</span>
 
+[this](https://github.com/mqyqingfeng/Blog/issues/7)
+
+[箭头函数this](https://es6.ruanyifeng.com/#docs/function#%E7%AE%AD%E5%A4%B4%E5%87%BD%E6%95%B0)
+
 &emsp;&emsp;this的指向需要关注的是函数执行的括号前面到底是什么东西。
 
 &emsp;&emsp;非严格模式下this的值为undefined时，会被隐式转换为全局对象。

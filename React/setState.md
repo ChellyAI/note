@@ -1,5 +1,9 @@
 ## setState
 
+[组件状态](https://zh-hans.reactjs.org/docs/faq-state.html)
+
+[React.Component](https://zh-hans.reactjs.org/docs/react-component.html#setstate)
+
 问结果是如何？
 ```js
   componentDidMount() {
