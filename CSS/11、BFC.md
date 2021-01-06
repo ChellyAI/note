@@ -140,7 +140,7 @@
     <p>Hehe</p>
 </body>
 ```
-![margin](./BFC/防止垂直margin重叠.png)
+![margin](./BFC/防止垂直margin重叠1.png)
 
 &emsp;&emsp;两个 `p` 之间的距离为 100px，发生了 margin 的上下重叠。
 
