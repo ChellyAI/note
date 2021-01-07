@@ -4,6 +4,10 @@
 
 [React.Component](https://zh-hans.reactjs.org/docs/react-component.html#setstate)
 
+[好评论](https://stackoverflow.com/questions/48563650/does-react-keep-the-order-for-state-updates/48610973#48610973)
+
+[另一个](https://github.com/facebook/react/issues/11527#issuecomment-360199710)
+
 问结果是如何？
 ```js
   componentDidMount() {
