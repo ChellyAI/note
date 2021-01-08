@@ -28,12 +28,84 @@
 ```
 &emsp;&emsp;首先需要明白，`setState` 并不是异步的，因为其批处理机制给人一种异步的假象。
 
-&emsp;&emsp;如果是由 `React` 引发的事件处理（例如通过 onClick 引发的），调用 `setState` 不会同步更新 `this.state`，除此之外的 `setState` 调用会同步执行 `this.state`。
+&emsp;&emsp;如果是由 `React` 引发的事件处理（例如通过 onClick 引发的，或者是生命周期函数中），调用 `setState` 不会同步更新 `this.state`，除此之外的 `setState` 调用会同步执行 `this.state`。
 
 结果:
 ```js
 //  0 0 2 3
 ```
+再问执行结果：
+```js
+class Test extends React.Component {
+
+  state = {
+    name: 'caisiqi',
+    age: 16,
+  }
+
+  componentDidMount = () => {
+    this.getState(1);
+
+    this.setState({
+      name: '雪ノ下雪乃',
+    });
+
+    this.getState(2);
+
+    this.setState({
+      age: 24,
+    });
+
+    this.getState(3);
+  }
+
+  getState = (num) => {
+    const { name, age } = this.state;
+
+    console.log(num, name, age);
+  }
+
+  render() {
+    return (
+      <>
+        <div>test</div>
+      </>
+    )
+  }
+}
+```
+结果如下：
+```js
+//  1 caisiqi 16
+//  2 caisiqi 16
+//  3 caisiqi 16
+```
+
+但如果其中加入了 Promise 或 async/await 呢？
+```js
+  componentDidMount = async () => {
+    await this.getState(1);
+
+    this.setState({
+      name: '雪ノ下雪乃',
+    });
+
+    this.getState(2);
+
+    this.setState({
+      age: 24,
+    });
+
+    this.getState(3);
+  }
+```
+结果会变成这样：
+```js
+//  1 caisiqi 16
+//  2 雪ノ下雪乃　16
+//  3 雪ノ下雪乃  24
+```
+将 `componentDidMount` 函数改成一个 `handleClick` 函数再试后，发现以上两个场景的结果也都与 `componentDidMount` 相同。为什么在默认的情况下展示的结果是异步，而结合了 Promise 或 async/await 展示的结果却是同步？这说明了什么？
 
 ## 前置知识——事务（Transaction）
 
