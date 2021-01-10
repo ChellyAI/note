@@ -1,11 +1,14 @@
-function haha() {
-  const a = {b: {name: 'c'}};
+function newFunc(...args) {
+  const obj = {};
+  const [Constructor, restProps] = [...args];
 
-  console.log(a, a.b);
+  obj.__proto__ = Constructor.prototype;
+  
+  const result = Constructor.apply(obj, restProps);
 
-  a.b.name = 'd';
+  if (typeof result === 'object') {
+    return result;
+  }
 
-  console.log(a, a.b);
+  return obj;
 }
-
-haha();

@@ -28,12 +28,13 @@
 ## <span id="browser">**浏览器的eventloop**</span>
 
 &emsp;&emsp;浏览器处理JavaScript脚本的顺序是：
-1. 在执行栈中从上到下执行同步代码
-2. 执行到异步代码就将其放入所属的任务队列中
-3. 执行完当前运行栈的同步代码后，按顺序从micro task queue中取出任务放到执行栈中执行，直到micro task queue被清空
-4. 当micro task queue清空后，按顺序从macro task queue中取出第一个任务放入执行栈中执行
-5. 假如过程中又有micro task则继续放入micro task queue并在执行完当前macro task任务后继续清空micro task queue
-6. 清理完毕micro task queue后继续步骤4，直到macro task queue也清理完
+1. 一开始将整个脚本作为一个宏任务执行
+2. 在执行栈中从上到下执行同步代码
+3. 执行到异步代码就将其放入所属的任务队列中
+4. 执行完当前运行栈的同步代码后，按顺序从micro task queue中取出任务放到执行栈中执行，直到micro task queue被清空
+5. <font color="red">**执行浏览器 UI 线程的渲染工作**</font>
+6. 检查是否有 Web Workder 任务，有则执行
+7. 执行完本轮的宏任务后，回到步骤二，按顺序从宏任务队列中取出下一个宏任务放入执行栈中执行，直到宏任务和微任务的队列都清空
 
 
 

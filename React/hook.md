@@ -16,6 +16,17 @@
 ---
 ### **useRef**
 
+```js
+const refContainer = React.useRef(initialValue);
+```
+&emsp;&emsp;`useRef` 返回一个可变的 ref 对象，将初始化传入的参数(initialValue)作为它的 **.current** 属性。
+
+&emsp;&emsp;返回的 ref 对象在组件的整个生命周期内保持不变。
+
+---
+### **useLayoutEffect**
+
+&emsp;&emsp;其函数传参与 `useEffect` 相同，但它会在所有的 DOM 变更之后同步调用 effect。可以使用它来读取 DOM 布局并同步触发重渲染。在浏览器执行绘制之前， `useLayoutEffect` 内部的更新计划将被同步刷新。
 
 ---
 ### **规则**
