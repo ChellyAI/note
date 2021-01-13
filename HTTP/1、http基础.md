@@ -68,6 +68,8 @@ http/1.1新增了五种请求方法：OPTIONS、PUT、DELETE、TRACE、CONNECT
 
 7. 从幂等性的角度来看，GET是幂等的，而POST不是
 
+注意：幂等是指，同样的请求被执行一次与连续执行多次的效果是一样的，服务器的状态也是一样的。[参考这里](https://developer.mozilla.org/zh-CN/docs/Glossary/%E5%B9%82%E7%AD%89)
+
 - **PUT和POST**
 
 &emsp;&emsp;PUT和POST方法作用类似，不同在于PUT是幂等的。当多次发送相同的POST请求，服务器上的资源数目可能会增加；而PUT请求后服务器上的资源数目不会增加，每次PUT都会覆盖前一次PUT的资源
