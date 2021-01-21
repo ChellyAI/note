@@ -2,6 +2,7 @@
 - [像素](#pixel)
 - [viewport](#viewport)
 
+[可以看看这里](https://www.cnblogs.com/zaoa/p/8630393.html)
 
 ### <span id="pixel">**像素**</span>
 
@@ -27,7 +28,11 @@ PPI(Pixels Per Inch)|像素密度
 
     - DIP
 
-      可以理解为反映在 CSS/JS 程序里面的像素点，CSS像素是逻辑像素的一种
+      可以理解为反映在 CSS/JS 程序里面的像素点，CSS像素是逻辑像素的一种。
+      ```
+        css像素 = 设备独立像素 = 逻辑像素
+      ```
+      在移动端浏览器及某些桌面浏览器中，window 对象有一个 `devicePixelRatio` 属性，它的官方定义为：设备物理像素和设备独立像素的比例，也就是 devicePixelRatio = 物理像素 / 独立像素
 
     - DPR
 
