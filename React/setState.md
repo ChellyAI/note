@@ -8,6 +8,8 @@
 
 [另一个](https://github.com/facebook/react/issues/11527#issuecomment-360199710)
 
+[深入解析的文章](https://juejin.cn/post/6844903636749778958)
+
 问结果是如何？
 ```js
   componentDidMount() {
