@@ -534,20 +534,20 @@ function reverse(x: number | string): number | string {
 
 #### <span id="new-language">**新语法**</span>
 
-- [](#)
-- [](#)
-- [](#)
-- [](#)
-- [](#)
-- [](#)
-- [](#)
-- [](#)
-- [](#)
-- [](#)
-- [](#)
-- [](#)
-- [](#)
-- [](#)
+- [declare var](#declare-var) 声明全局变量
+- [declare function](#declare-function) 声明全局方法
+- [declare class](#declare-class) 声明全局类
+- [declare enum](#declare-enum) 声明全局枚举类型
+- [declare namespace](#declare-namespace) 声明（含有子属性）的全局对象
+- [interface & type](#interface-type) 声明全局类型
+- [export](#export) 导出变量
+- [export namespace](#export-namespace) 导出（含有子属性）的对象
+- [export default](#export-default) ES6 默认导出
+- [export =](#export-=) commonjs 导出模块
+- [export as namespace](#export-as-namespace) UMD 库声明全局变量
+- [declare global](#declare-global) 扩展全局变量
+- [declare module](#declare-module) 扩展模块
+- [/// <reference />](#///-reference) 三斜线指令
 
 ---
 
