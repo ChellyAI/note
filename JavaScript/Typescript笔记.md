@@ -14,13 +14,13 @@
   - [类型推论](#type-inference)
   - [联合类型](#union-types)
   - [对象的类型——接口](#interfaces)
-  - [](#)
-  - [](#)
-  - [](#)
-  - [](#)
-  - [](#)
-  - [](#)
-  - [](#)
+  - [数组的类型](#array)
+    - [数组泛型](#array-generic)
+  - [函数的类型](#function)
+  - [类型断言](#type-assertion)
+  - [声明文件](#definitely-file)
+    - [新语法](#new-language)
+  - [内置对象](#inner-object)
   - [](#)
   - [](#)
   - [](#)
@@ -265,3 +265,303 @@ console.log(myNumber.length);	//	报错
 &emsp;&emsp;在面向对象语言中，接口（interfaces）是一个很重要的概念，它是对行为的抽象，而具体如何行动需要由类（classes）去实现（implement）。
 
 &emsp;&emsp;TypeScript 中的接口是一个非常灵活的概念，除了可用于对类的一部分行为进行抽象以外，也常用于对 `对象的形状` 进行描述。
+
+&emsp;&emsp;正常使用下，定义的变量比接口多了、少了属性是不允许的：
+
+```typescript
+interface Wife {
+    name: string;
+    age: number;
+}
+
+//	多了顺位
+let yukino: Wife = {
+    name: '雪ノ下雪乃';
+    age: 16;
+    order: 'first';
+};
+
+//	少了age
+let yukino: Wife = {
+    name: '雪ノ下雪乃';
+};
+```
+
+&emsp;&emsp;但某些场景下对象的部分属性的确未赋值，那么可以将其设置为**可选属性**：
+
+```typescript
+interface Wife {
+    name: string;
+    age: number;
+    order?: string
+}
+```
+
+&emsp;&emsp;还可以有更随意的场景，希望接口允许有任意的、未定义的属性，可以定义**任意属性**：
+
+```typescript
+interface Wife {
+    name: string;
+    age: number;
+    order?: string;
+    [propName: string]: any;
+}
+
+let yukino: Wife = {
+    name: '雪ノ下雪乃';
+    age: 16;
+    country: '日本';
+};
+```
+
+**注意：**
+
+&emsp;&emsp;一旦使用了任意属性，那么确定属性和可选属性的类型都必须是任意属性的类型的子集，例如：
+
+```typescript
+//	有问题
+interface Wife {
+    name: string;
+    age: number;	//	会报错“类型number的属性age不能赋值给字符串索引类型string
+    [propName: string]: string;
+}
+
+//	正确
+interface Wife {
+    name: string;
+    age: number;
+    [propName: string]: string | number;
+}
+```
+
+&emsp;&emsp;上例中使用了联合类型作为任意属性的类型。（使用 `any` 也可以，但还是尽量更加严谨点好）
+
+&emsp;&emsp;假如某些属性希望只能在创建的时候被赋值，后续不允许更改，那么可以使用**只读属性**。
+
+```typescript
+interface Wife {
+    readonly name: string;
+    age?: number;
+}
+
+let yukino: Wife = {
+    name: '雪ノ下雪乃';
+};
+
+yukino.name = '一色彩羽';
+//	Cannot assign to 'name' because it is a constant or a read-only property
+```
+
+**注意：**
+
+&emsp;&emsp;只读的约束存在于第一次给对象赋值的时候，而不是第一次给只读属性赋值的时候：
+
+```typescript
+interface Wife {
+    readonly name: string;
+    age?: number;
+}
+
+let yukino = {
+    age: 16,
+};
+
+yukino.name = '雪ノ下雪乃';
+//	报错有两个，一是定义 yukino 的时候没有给只读属性 name 赋值
+//	二是给 name 赋值的时候不允许
+```
+
+[返回目录](#menu)
+
+---
+
+### <span id="array">**数组的类型**</span>
+
+&emsp;&emsp;最简单的方法是使用 `类型+方括号` 来表示数组，且不允许出现其他的类型，某些方法的参数也会根据定义的类型进行限制。一个比较常见的做法是用 `any` 表示数组中允许出现的任意类型：
+
+```typescript
+let arr: number[] = [1, 2, 3, 4];
+
+arr.push('5');	//	报错
+
+let list: any[] = ['caisiqi', 16, {wife: '雪ノ下雪乃'}];
+```
+
+#### <span id="array-generic">**数组泛型**</span>
+
+&emsp;&emsp;还可以使用数组泛型（Array Generic）`Array<elementType>` 来表示数组：
+
+```typescript
+let arr: Array<number> = [1, 2, 3];
+let arr: Array<number | string | boolean> = [1, '2', false];
+```
+
+&emsp;&emsp;具体的泛型可参考[**泛型**](#generic)部分。
+
+&emsp;&emsp;还可以使用接口来表示数组：
+
+```typescript
+interface Arr {
+    [index: number]: number | string | boolean;
+}
+let arr: Arr = [1, 2, '3', true];
+```
+
+&emsp;&emsp;像 `arguments` 这种类数组（Array-like Object）不是数组类型，不能使用普通的数组方式来描述，而应该用接口。
+
+&emsp;&emsp;常用的类数组都有自己的接口定义，比如 `IArguments`、`NodeList`、`HTMLCollection` 等。其中 `IArguments` 是 TypeScript 中定义好的类型。
+
+```typescript
+function sum() {
+    let args: {
+        [index: number]: number;
+        length: number;
+        callee: Function;
+    } = arguments;
+}
+
+function sum() {
+    let args: IArguments = arguments;
+}
+
+interface IArguments {
+    [index: number]: any;
+    length: number;
+    callee: Function;
+}
+```
+
+&emsp;&emsp;关于内置对象，可以参考[**内置对象**](#inner-object)的部分。
+
+---
+
+### <span id="function">**函数的类型**</span>
+
+&emsp;&emsp;有两种常见的定义函数的方式——函数声明（Function Declaration）和函数表达式（Function Expression）。
+
+&emsp;&emsp;一个函数有输入和输出，需要把约束的类型都考虑到。
+
+**函数声明**
+
+```typescript
+function sum(x: number, y: number): number {
+    return x + y;
+}
+```
+
+**函数表达式**
+
+```typescript
+let sum: (x: number, y: number) => number = function (x: number, y: number): number {
+    return x + y;
+};
+```
+
+**用接口定义函数的形状**
+
+```typescript
+interface SearchFunc {
+    (source: string, subString: string): boolean;
+}
+
+let mySearch: SearchFunc;
+mySearch = function(source: string, subString: string) {
+    return soure.search(subString) !== -1;
+}
+```
+
+&emsp;&emsp;使用函数表达式、接口定义函数的类型时，对等号左侧进行类型限制，可以保证以后对函数名赋值时参数个数、参数类型、返回值类型不变。
+
+**可选参数**
+
+&emsp;&emsp;需要注意，可选参数必须接在必需参数的后面。
+
+```typescript
+function getName(firstName: string, lastName?: string) {
+    if (lastName) {
+        return firstName + ' ' + lastName;
+    }
+    else {
+        return firstName;
+    }
+}
+```
+
+**参数默认值**
+
+&emsp;&emsp;TypeScript 会将添加了默认值的参数识别为可选参数。
+
+```typescript
+function getName(firstName: string = '雪ノ下', lastName: string) {
+    return firstName + ' ' + lastName;
+}
+```
+
+**剩余参数**
+
+```typescript
+function push(arr: any[], ...restProps: any[]) {
+    //	some code
+}
+```
+
+**重载**
+
+&emsp;&emsp;重载允许一个函数接受不同数量或类型的参数时，作出不同的处理。
+
+```typescript
+function reverse(x: number): number;
+function reverse(x: string): string;
+function reverse(x: number | string): number | string {
+    if (typeof x === 'number') {
+        return Number(x.toString().split('').reverse().hoin(''));
+    }
+    else if (typeof x === 'string') {
+        return x.split('').reverse().join('');
+    }
+}
+```
+
+---
+
+### <span id="type-assertion">**类型断言**</span>
+
+&emsp;&emsp;看了一圈感觉没卵用，不如直接看看[**泛型**](#generic)
+
+---
+
+### <span id="definitely-file">**声明文件**</span>
+
+#### <span id="new-language">**新语法**</span>
+
+- [](#)
+- [](#)
+- [](#)
+- [](#)
+- [](#)
+- [](#)
+- [](#)
+- [](#)
+- [](#)
+- [](#)
+- [](#)
+- [](#)
+- [](#)
+- [](#)
+
+---
+
+### <span id="inner-object">**内置对象**</span>
+
+&emsp;&emsp;标准的内置对象有 `Boolean` `Error`  `Date` `RegExp` 等；
+
+&emsp;&emsp;DOM 和 BOM 提供的内置对象有 `Document` `HTMLElement` `Event` `NodeList` 等；
+
+&emsp;&emsp;更多可以看看 [MDN文档](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects)，它们的定义文件在 [TypeScript 核心库的定义文件](https://github.com/Microsoft/TypeScript/tree/master/src/lib)中；
+
+&emsp;&emsp;Node.js 不是内置对象的一部分，想用 TypeScript 写 Node.js，需要引入第三方声明文件
+
+```
+npm install @types/node --save-dev
+```
+
