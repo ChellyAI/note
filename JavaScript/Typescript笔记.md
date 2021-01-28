@@ -18,15 +18,18 @@
     - [数组泛型](#array-generic)
   - [函数的类型](#function)
   - [类型断言](#type-assertion)
+  - [内置对象](#inner-object)
+  - [类型别名](#type)
+  - [字符串字面量类型](#string-type)
+  - [元组](#tuple)
+  - [枚举](#enum)
+  - [类](#class)
+  - [类与接口](#class-interface)
+  - [泛型](#generic)
+  - [声明合并](#concat)
+- [进阶](#supreme)
   - [声明文件](#definitely-file)
     - [新语法](#new-language)
-  - [内置对象](#inner-object)
-  - [](#)
-  - [](#)
-  - [](#)
-  - [](#)
-  - [](#)
-  - [](#)
 
 
 
@@ -433,6 +436,8 @@ interface IArguments {
 
 &emsp;&emsp;关于内置对象，可以参考[**内置对象**](#inner-object)的部分。
 
+[返回目录](#menu)
+
 ---
 
 ### <span id="function">**函数的类型**</span>
@@ -522,14 +527,230 @@ function reverse(x: number | string): number | string {
 }
 ```
 
+[返回目录](#menu)
+
 ---
 
 ### <span id="type-assertion">**类型断言**</span>
 
 &emsp;&emsp;看了一圈感觉没卵用，不如直接看看[**泛型**](#generic)
 
+[返回目录](#menu)
+
 ---
 
+### <span id="inner-object">**内置对象**</span>
+
+&emsp;&emsp;标准的内置对象有 `Boolean` `Error`  `Date` `RegExp` 等；
+
+&emsp;&emsp;DOM 和 BOM 提供的内置对象有 `Document` `HTMLElement` `Event` `NodeList` 等；
+
+&emsp;&emsp;更多可以看看 [MDN文档](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects)，它们的定义文件在 [TypeScript 核心库的定义文件](https://github.com/Microsoft/TypeScript/tree/master/src/lib)中；
+
+&emsp;&emsp;Node.js 不是内置对象的一部分，想用 TypeScript 写 Node.js，需要引入第三方声明文件
+
+```
+npm install @types/node --save-dev
+```
+
+[返回目录](#menu)
+
+---
+
+### <span id="type">**类型别名**</span>
+
+&emsp;&emsp;类型别名用来给一个类型起新名字，使用 `type` 创建类型别名，它常用于联合类型。
+
+```typescript
+type Name = string;
+type GetName = () => string;
+type NameOrGetName = Name | GetName;
+function func(name: NameOrGetName): Name {
+    if (typeof name === 'string') {
+        return name;
+    }
+    else {
+        return name();
+    }
+}
+```
+
+[返回目录](#menu)
+
+---
+
+### <span id="string-type">**字符串字面量类型（实际上不止字符串）**</span>
+
+&emsp;&emsp;字符串字面量类型用来约束取值，只能是某几个字符串中的一个。
+
+```typescript
+type EventNames = 'click' | 'scroll' | 'mousemove';
+function handleEvent(ele: Element, event: EventNames) {
+    //	some code
+}
+
+handleEvent(document.getElementById('root'), 'scroll');	//	可以
+handleEvent(document.getElementById('app'), 'dblclick');	//	报错，event 不能是 'dblclick'
+```
+
+&emsp;&emsp;上例中，使用 `type` 定义了一个字符串字面量类型 `EventNames`，它只能取三个字符串中的一种。
+
+**注意：**
+
+&emsp;&emsp;类型别名与字符串字面量类型都是用 `type` 进行定义。
+
+<font color="red">**另外：不一定要字符串，任意的基础类型都可以这样使用。**</font>
+
+[返回目录](#menu)
+
+---
+
+### <span id="tuple">**元组**</span>
+
+&emsp;&emsp;数组合并相同类型的对象，而元组（Tuple）合并了不同类型的对象。
+
+&emsp;&emsp;定义一对值分别为 `string` 和 `number` 的元组：
+
+```typescript
+let wife: [string, number] = ['雪ノ下雪乃', 16];
+```
+
+&emsp;&emsp;赋值或访问一个已知索引的元素时，会得到正确的类型：
+
+```typescript
+let wife: [string, number];
+wife[0] = '雪ノ下雪乃';
+wife[1] = 16;
+
+wife[0].slice(1);
+wife[1].toFixed(2);
+```
+
+&emsp;&emsp;也可以只赋值其中某一项：
+
+```typescript
+let wife: [string, number];
+wife[0] = '雪ノ下雪乃';
+```
+
+&emsp;&emsp;但是直接对元组类型的变量进行初始化或者赋值的时候，需要提供所有元组类型中指定的项：
+
+```typescript
+let wife: [string, number];
+wife = ['雪ノ下雪乃', 16];
+```
+
+&emsp;&emsp;添加越界的元素时，元素类型会被限制为元组中每个类型的联合类型：
+
+```typescript
+let wife: [string, number];
+
+wife = ['雪ノ下雪乃', 16];
+wife.push(true);	//	Argument of type 'true' is not assignable to parameter of type 'string | number'.
+```
+
+[返回目录](#menu)
+
+---
+
+### <span id="enum">**枚举**</span>
+
+&emsp;&emsp;枚举（Enum）类型用于取值被限定在一定范围内的场景。比如一周七天、光的三原色为红黄绿等。
+
+&emsp;&emsp;枚举使用 `enum` 关键字来定义，枚举成员会被赋值为从 `0` 开始递增的数字，同时也会对枚举值到枚举名进行反向映射：
+
+```typescript
+enum Color {Red, Yellow, Green};
+
+console.log(Color['Red'] === 0);	//	true
+console.log(Color['Yellow'] === 1);	//	true
+console.log(Color['Green'] === 2);	//	true
+
+console.log(Color[0] === 'Red');	//	true
+console.log(Color[1] === 'Yellow');	//	true
+console.log(Color[2] === 'Green');	//	true
+```
+
+**手动赋值**
+
+&emsp;&emsp;可以手动给枚举项赋值，未赋值的枚举项会接着上一个枚举项递增。可以是小数、负数，如果未手动赋值的枚举项与手动赋值的重复，后面的会覆盖前面的，所以最好不要有重复。
+
+```typescript
+enum Color {Red = -2, Yellow, Blue = 8.5, Green};
+
+console.log(Color['Yellow'] === -1);	//	true
+console.log(Color['Green'] === 9.5);	//	true
+```
+
+**计算所得项**
+
+&emsp;&emsp;前面都是常数项，还可以是计算所得项：
+
+```typescript
+enum Color {Red, Yellow = 'Yellow'.length};
+```
+
+&emsp;&emsp;但假如紧接在计算所得项后面的是未手动赋值的项，那么它就会因无法获得初始值而报错：
+
+```typescript
+enum Color {Red = 'Red'.length, Yellow};	//	error: Enum menber must have initializer.
+```
+
+**常数枚举**
+
+&emsp;&emsp;常数枚举是使用 `const enum` 定义的枚举类型：
+
+```typescript
+const enum Directions {Up, Down, Left, Right};
+
+let directions = [Directions.Up, Directions.Down, Directions.Left, Directions.Right];
+```
+
+&emsp;&emsp;常数枚举与普通枚举的区别是，它会在编译阶段被删除，并且不能包含计算成员。如果包含，会在编译阶段报错。
+
+**外部枚举**
+
+&emsp;&emsp;外部枚举是使用 `declare enum` 定义的枚举类型：
+
+```typescript
+declare enum Directions {Up, Down, Left, Right};
+```
+
+&emsp;&emsp;`declare` 定义的类型只会用于编译时的检查，编译结果中会被删除。
+
+&emsp;&emsp;外部枚举与声明语句一样，常出现在声明文件中。
+
+&emsp;&emsp;同时使用 `declare` 和 `const` 也是可以的。
+
+[返回目录](#menu)
+
+---
+
+### <span id="class">**类**</span>
+
+[返回目录](#menu)
+
+---
+
+### <span id="class-interface">**类与接口**</span>
+
+[返回目录](#menu)
+
+---
+
+### <span id="generic">**泛型**</span>
+
+[返回目录](#menu)
+
+---
+
+### <span id="concat">**声明合并**</span>
+
+[返回目录](#menu)
+
+---
+
+## <span id="supereme">**进阶**</span>
 ### <span id="definitely-file">**声明文件**</span>
 
 #### <span id="new-language">**新语法**</span>
@@ -549,19 +770,6 @@ function reverse(x: number | string): number | string {
 - [declare module](#declare-module) 扩展模块
 - [/// <reference />](#///-reference) 三斜线指令
 
----
 
-### <span id="inner-object">**内置对象**</span>
 
-&emsp;&emsp;标准的内置对象有 `Boolean` `Error`  `Date` `RegExp` 等；
-
-&emsp;&emsp;DOM 和 BOM 提供的内置对象有 `Document` `HTMLElement` `Event` `NodeList` 等；
-
-&emsp;&emsp;更多可以看看 [MDN文档](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects)，它们的定义文件在 [TypeScript 核心库的定义文件](https://github.com/Microsoft/TypeScript/tree/master/src/lib)中；
-
-&emsp;&emsp;Node.js 不是内置对象的一部分，想用 TypeScript 写 Node.js，需要引入第三方声明文件
-
-```
-npm install @types/node --save-dev
-```
-
+[返回目录](#menu)
