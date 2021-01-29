@@ -708,6 +708,15 @@ let directions = [Directions.Up, Directions.Down, Directions.Left, Directions.Ri
 
 &emsp;&emsp;常数枚举与普通枚举的区别是，它会在编译阶段被删除，并且不能包含计算成员。如果包含，会在编译阶段报错。
 
+```typescript
+const enum Directions {Up, Down, Left, Right};
+
+console.log(Directions);	//	会报错
+//	"const" 枚举仅可在属性、索引访问表达式、导入声明的右侧、导出分配或类型查询中使用
+```
+
+
+
 **外部枚举**
 
 &emsp;&emsp;外部枚举是使用 `declare enum` 定义的枚举类型：
@@ -734,17 +743,291 @@ declare enum Directions {Up, Down, Left, Right};
 
 ### <span id="class-interface">**类与接口**</span>
 
+&emsp;&emsp;实现（implements）是面向对象中的一个重要概念。一般，一个类只能继承自另一个类，有时候不同类之间可以有一些共有的特性，这时候可以把特性提取成接口（interface），用 `implements` 关键字来实现。
+
+&emsp;&emsp;例如防盗门是门的子类，它和车一样都有报警器，因此可以将报警器提取成一个接口：
+
+```typescript
+interface Alarm {
+    alert(): void;
+}
+
+class Door {}
+
+class SecurityDoor extends Door implements Alarm {
+    alert() {
+        console.log('SecurityDoor Alarm');
+    }
+}
+
+class Car implements Alarm {
+    alert() {
+        console.log('car Alarm');
+    }
+}
+```
+
+&emsp;&emsp;一个类也可以实现（implements）多个接口（interface）:
+
+```typescript
+interface Alarm {
+    alert(): void;
+}
+
+interface Light {
+    lightOn(): void;
+    lightOff(): void;
+}
+
+class Car implements Alarm, Light {
+    alert() {
+        //	code
+    }
+    
+    lightOn() {
+        //	code
+    }
+    
+    lightOff() {
+        //	code
+    }
+}
+```
+
+**接口继承接口**
+
+```typescript
+interface Alarm {
+    alert(): void;
+}
+
+interface LightAndAlarm extends Alarm {
+    lightOn(): void;
+    lightOff(): void;
+}
+```
+
+**接口继承类**
+
+&emsp;&emsp;其原理是声明一个类时，同时也创建了一个同名的类型（实例的类型），所以 `接口继承类` 和 `接口继承接口` 没有什么本质区别。
+
+**注意：**创建的类型相比于类，缺少构造函数、静态属性、静态方法，因为实例的类型是不包含它们的。也就是<font color="red">声明类时创建的类型只包含其中的实例属性和实例方法。</font>
+
+```typescript
+class Point {
+    x: number
+    y: number
+    constructor(x: number, y: number) {
+        this.x = x;
+        this.y = y;
+    }
+    printPoint() {
+        console.log(this.x, this.y);
+    }
+    //	静态属性，坐标系原点
+    static origin = new Point(0, 0)
+    //	静态方法，求与原点距离
+	static distanceToOrigin(p: Point) {
+        return Math.sqrt(p.x * p.x + p.y * p.y);
+    }
+}
+
+//	接口继承类
+interface 3DPoint extends Point {
+    z: number;
+}
+
+//	将类（class）当作接口（interface）使用
+function getPosition(p: Point) {
+    console.log(p.x, p.y);
+}
+
+//	类型Point与以下类型等价
+interface Faker {
+    x: number;
+    y: number;
+    printPoint(): void;
+}
+```
+
 [返回目录](#menu)
 
 ---
 
 ### <span id="generic">**泛型**</span>
 
+&emsp;&emsp;泛型（Generics）是指在定义函数、接口或类的时候，不预先指定具体的类型，而在使用的时候再指定类型的一种特性。
+
+&emsp;&emsp;举例说明，我们首先实现一个函数 createArray，它将创建一个指定长度的数组，每一项都填充一个默认值：
+
+```typescript
+function createArray(length: number, value: any): Array<any> {
+    let result = [];
+    for (let i = 0; i < length; i++) {
+        result[i] = value;
+    }
+    return result;
+}
+
+createArray(3, 'x');	//	['x', 'x', 'x']
+```
+
+&emsp;&emsp;以上代码虽然可以直接用了，但一个缺陷是未能准确定义返回值类型。使用 `any` 将允许每一项都为任意类型。我们的预期是输入 `value` 的类型应该就是每一项的类型。此时就可以使用泛型来应对：
+
+```typescript
+function createArray<T>(length: number, value: T): Array<T> {
+    let result: T[] = [];
+    for (let i = 0; i < length; i++) {
+        result[i] = value;
+    }
+    return result;
+}
+
+createArray<string>(3, 'x');	//	['x', 'x', 'x']
+//	类型推论也可以
+createArray(3, 'x');
+```
+
+&emsp;&emsp;函数名后面添加了 `<T>` ，其中 `T` 用来指代任意输入的类型，在后面的输入 `value: T` 和输出 `Array<T>` 中即可使用。接着在调用的时候，既可以手动指定具体类型为 `string` ，也可以让类型推论自动推算。
+
+&emsp;&emsp;定义泛型的时候也可以一次定义多个类型参数：
+
+```typescript
+function swap<T, U>(tuple: [T, U]): [U, T] {
+    return [tuple[1], tuple[0]];
+}
+
+swap([7, 'seven']);	//	['seven', 7]
+```
+
+**泛型约束**
+
+&emsp;&emsp;在函数内部使用泛型变量，由于事先不知道其类型，因此不能随意操作它的属性或方法。此时可以对泛型进行约束，例如某个泛型 `T` 不一定包含属性 `length`，但约束后只允许函数传入包含 `length` 属性的变量。
+
+```typescript
+//	error: Property 'length' does not exist on type 'T'
+function checkType<T>(arg: T): T {
+    console.log(arg.length);
+    return arg;
+}
+
+//	泛型约束其实类似接口的继承
+interface Lengthwise {
+    length: number
+}
+
+function checkType<T extends Lengthwise>(arg: T): T {
+    console.log(arg.length);
+    return arg;
+}
+
+checkType(6);	//	在编译阶段就会报错，因为 6 没有 length 属性
+```
+
+&emsp;&emsp;多个类型参数之间也可以相互约束，下例中要求 `T` 继承 `U`，这就保证 `U` 中不会出现 `T` 中不存在的字段：
+
+```typescript
+function copy<T extends U, U>(target: T, source: U): T {
+    for (let id in source) {
+        target[id] = (<T>source)[id];
+    }
+    return target;
+}
+
+let x = {a: 1, b: 2, c: 3, d: 4};
+
+const result = copy(x, {b: 10, d: 20});
+console.log(result);	//	{a: 1, b: 10, c: 3, d: 20}
+```
+
+**泛型接口**
+
+&emsp;&emsp;之前介绍过可以使用接口的方式来定义一个函数需要符合的形状，因此也可以使用含有泛型的接口来定义函数的形状：
+
+```typescript
+interface CreateArrayFunc {
+    <T>(length: number, value: T): Array<T>;
+}
+
+let createArray: CreateArrayFunc;
+createArray = function<T>(length: number, value: T): Array<T> {
+    let result: T[] = [];
+    for (let i = 0; i < length; i++) {
+        result[i] = value;
+    }
+    return result;
+}
+
+createArray(3, 'x');	//	['x', 'x', 'x']
+```
+
+&emsp;&emsp;也可以把泛型的参数提前到接口名上：
+
+```typescript
+//	<T>被提前到了接口名上
+interface CreateArrayFunc<T> {
+    (length: number, value: T): Array<T>;
+}
+
+//	注意这里使用泛型接口的时候，需要定义泛型的类型，于是这里就添加了一个<any>
+let createArray: CreateArrayFunc<any>;
+```
+
+**泛型类**
+
+&emsp;&emsp;与泛型接口类似，泛型也可以用于类的类型定义中：
+
+```typescript
+class GenericNumber<T> {
+    zeroValue: T;
+    add: (x: T, y: T) => T;
+}
+
+let myNum = new GenericNumber<number>();
+myNum.zeroValue = 0;
+myNum.add = function(x, y) {
+    return x + y;
+};
+```
+
+**设定泛型参数的默认类型**
+
+&emsp;&emsp;在 TypeScript 2.3以后，可以为泛型中的类型参数设定默认类型。当使用泛型时没有在代码中直接指定类型参数，从实际值参数中也无法推测出时，这个默认类型就会起作用。
+
+```typescript
+function createArray<T = string>(length: number, value: T): Array<T> {
+    let result: T[] = [];
+    for (let i = 0; i < length; i++) {
+        result[i] = value;
+    }
+    return result;
+}
+```
+
 [返回目录](#menu)
 
 ---
 
 ### <span id="concat">**声明合并**</span>
+
+&emsp;&emsp;如果定义了两个相同名字的函数、接口或类，那么它们会合并成一个类型。
+
+&emsp;&emsp;函数的合并参考重载；
+
+&emsp;&emsp;接口的合并，会将接口的属性简单合并到一个接口中，但需要注意的是**合并的属性的类型必须是唯一的**；
+
+```typescript
+interface Wife {
+    name: string;
+}
+
+interface Wife {
+    name: number;	//	会报错，后续声明属性必须是同一类型
+    age: number;
+}
+```
+
+&emsp;&emsp;类的合并与接口合并规则一致。
 
 [返回目录](#menu)
 
