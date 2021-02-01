@@ -2,6 +2,8 @@
 
 ## <span id="menu">目录</span>
 
+- [非官方中文手册](https://github.com/ChellyAI/TypeScript)
+- [非官方个人教程](https://ts.xcatliu.com/basics/primitive-data-types.html)
 - [前言](#description)
 - [基础](#base)
   - [原始数据类型](#original)
@@ -10,6 +12,11 @@
     - [字符串](#string)
     - [空值](#void)
     - [null 和 undefined](#null-undefined)
+    - [Unknown](#unknown)
+    - [Any](#any)
+    - [Void](#void)
+    - [Never](#never)
+    - [Object](#object)
   - [任意值](#any)
   - [类型推论](#type-inference)
   - [联合类型](#union-types)
@@ -71,9 +78,7 @@ tsc hello.ts
 
 ### <span id="original">**原始数据类型**</span>
 
-&emsp;&emsp;JavaScript 原始数据类型包括有：布尔值、数值、字符串、null、undefined、ES6 的 Symbol 和 BigInt。
-
-&emsp;&emsp;这里主要介绍的是**前五种**类型的应用。
+&emsp;&emsp;JavaScript 原始数据类型包括有：布尔值、数值、字符串、null、undefined、ES6 的 Symbol 和 BigInt，而 TypeScript 中还有 unknown、any、never、void、object等其他类型。
 
 #### <span id="boolean">**布尔值**</span>
 
@@ -98,12 +103,14 @@ let createBoolean: boolean = Boolean(1);
 
 #### <span id="number">**数值**</span>
 
-&emsp;&emsp;用 `number` 定义数值类型：
+&emsp;&emsp;用 `number` 定义数值类型，而大整数的类型是 `bigint`。
 
 ```typescript
 let age: number = 16;
 let notANumber: number = NaN;
 let infinityNumber: number = Infinity;
+
+let bigLiteral: bigint = 100n;
 ```
 
 #### <span id="string">**字符串**</span>
@@ -142,6 +149,70 @@ let num: number = u;
 let emptyValue: void;
 let num: number = emptyValue;
 //	Type 'void' is not assignable to type 'number'
+```
+
+#### <span id="unknown">**Unknown**</span>
+
+&emsp;&emsp;写应用时可能会需要描述一个还不知道其类型的变量，这些值可以来自动态内容，例如用户输入或者 API 接收。这种情况下，我们想要让编译器知道这个变量可以是任意类型，此时可以使用 `unknown` 类型：
+
+```typescript
+let notSure: unknown = 1;
+notSure = 'maybe a string instead';
+```
+
+#### <span id="any">**Any**</span>
+
+&emsp;&emsp;看别人总结的描述，`any` 类型和 `unknown` 基本一样，但 `unknown` 是更安全版本的 `any`，在对 `unknown` 类型的值执行任何操作之前，必须先通过一些方法（类型断言、类型防护等）限定其类型。
+
+#### <span id="void">**Void**</span>
+
+&emsp;&emsp;某种程度上来说，`void` 类型与 `any` 类型相反，它表示没有任何类型。当一个函数没有返回值时，其返回类型就是 `void`。声明一个 `void` 类型的变量没什么卵用，因为只能给它赋值 null （只在 `--strictNullChecks` 未指定时）和 undefined。
+
+#### <span id="never">**Never**</span>
+
+&emsp;&emsp;`never` 类型表示的是那些永不存在的值的类型。
+
+&emsp;&emsp;例如，`never` 类型是那些总是会抛出异常或根本就不会有返回值的函数表达式或箭头函数表达式的返回值类型；变量也可能是 `never` 类型，当它们被永不为真的类型保护所约束时。
+
+&emsp;&emsp;`never` 类型是任何类型的子类，也可以赋值给任何类型；然而，没有类型是 `never` 的子类型或可以赋值给 `never` 类型（除了 `never` 类型本身之外），即使 `any` 也不可以赋值给 `never`。
+
+&emsp;&emsp;下例是返回 `never` 类型的函数：
+
+```typescript
+//	返回never的函数必须存在无法到达的终点
+function error(message: string): never {
+    throw new Error(message);
+}
+
+//	推断的返回值类型为 never
+function fail() {
+    return error('Something failed');
+}
+
+//	返回never的函数必须存在无法达到的终点
+function infiniteLoop(): never {
+    while(true) {
+        //	code
+    }
+}
+```
+
+#### <span id="object">**Object**</span>
+
+&emsp;&emsp;`object` 表示非原始类型，也就是除 `number`、`string`、`boolean`、`bigint`、`symbol`、`null` 或 `undefined` 之外的类型。
+
+&emsp;&emsp;使用 `object` 类型，就可以更好的表示像 `Object.create` 这样的 API。例如：
+
+```typescript
+declare function create(o: object | null): void;
+
+create({ prop: 0 });	//	OK
+create(null);	//	ok
+
+create(24);	//	error
+create('string');	//	error
+create(false);	//	error
+create(undefined);	//	error
 ```
 
 [返回目录](#menu)
@@ -607,12 +678,16 @@ handleEvent(document.getElementById('app'), 'dblclick');	//	报错，event 不�
 
 ### <span id="tuple">**元组**</span>
 
-&emsp;&emsp;数组合并相同类型的对象，而元组（Tuple）合并了不同类型的对象。
+&emsp;&emsp;元组类型（Tuple）允许表示一个已知元素数量和类型的数组，各元素的类型不必相同。可以理解为数组合并相同类型的对象，而元组（Tuple）合并了不同类型的对象。
 
 &emsp;&emsp;定义一对值分别为 `string` 和 `number` 的元组：
 
 ```typescript
+//	正确
 let wife: [string, number] = ['雪ノ下雪乃', 16];
+
+//	报错
+let wife: [string, number] = [16, '雪ノ下雪乃'];
 ```
 
 &emsp;&emsp;赋值或访问一个已知索引的元素时，会得到正确的类型：
@@ -783,11 +858,11 @@ class Car implements Alarm, Light {
     alert() {
         //	code
     }
-    
+
     lightOn() {
         //	code
     }
-    
+
     lightOff() {
         //	code
     }
