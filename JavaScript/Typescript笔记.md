@@ -27,7 +27,7 @@
   - [类型断言](#type-assertion)
   - [内置对象](#inner-object)
   - [类型别名](#type)
-  - [字符串字面量类型](#string-type)
+  - [字面量类型](#string-type)
   - [元组](#tuple)
   - [枚举](#enum)
   - [类](#class)
@@ -604,7 +604,18 @@ function reverse(x: number | string): number | string {
 
 ### <span id="type-assertion">**类型断言**</span>
 
-&emsp;&emsp;看了一圈感觉没卵用，不如直接看看[**泛型**](#generic)
+&emsp;&emsp;通过类型断言可以告诉编译器，“我知道我在干什么”，达成类型转换但不进行特殊数据检查和解构的目的。TypeScript 会假设使用者已经进行了必要的检查。
+
+&emsp;&emsp;类型断言有两种形式，其一是尖括号语法，其二是 `as` 语法，当**在 TypeScript 中使用 JSX 时，必须使用 `as` 语法的类型断言：
+
+```typescript
+let someValue: any = 'a string';
+
+let strLength: number = (<string>someValue).length;
+let strLength: number = (someValue as string).length;
+```
+
+&emsp;&emsp;个人看了一圈感觉没卵用，不如直接使用[**泛型**](#generic)
 
 [返回目录](#menu)
 
@@ -650,7 +661,9 @@ function func(name: NameOrGetName): Name {
 
 ---
 
-### <span id="string-type">**字符串字面量类型（实际上不止字符串）**</span>
+### <span id="string-type">**字面量类型**</span>
+
+**字符串字面量类型**
 
 &emsp;&emsp;字符串字面量类型用来约束取值，只能是某几个字符串中的一个。
 
@@ -670,7 +683,35 @@ handleEvent(document.getElementById('app'), 'dblclick');	//	报错，event 不�
 
 &emsp;&emsp;类型别名与字符串字面量类型都是用 `type` 进行定义。
 
-<font color="red">**另外：不一定要字符串，任意的基础类型都可以这样使用。**</font>
+**数字字面量类型**
+
+&emsp;&emsp;行为与字符串字面量类型相同，它通常用来描述配置值：
+
+```typescript
+interface Config {
+    width: number;
+    height: number;
+    size: 8 | 16 | 24;
+}
+```
+
+**布尔字面量类型**
+
+&emsp;&emsp;可以使用布尔字面量类型来约束某些属性之间互有关联的对象：
+
+```typescript
+interface ValidateSuccess {
+    isValid: true;
+    reason: null;
+}
+
+interface ValidateFailure {
+    isValid: false;
+    reason: string;
+}
+
+type ValidateResult = ValidateSuccess | ValidateFaliure;
+```
 
 [返回目录](#menu)
 
