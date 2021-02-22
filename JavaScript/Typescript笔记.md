@@ -44,6 +44,8 @@
 
 ## <span id="description">**前言**</span>
 
+&emsp;&emsp;**JavaScript 是动态弱类型的语言。**
+
 &emsp;&emsp;**TypeScript 是静态类型**。
 
 &emsp;&emsp;类型系统按照 `类型检查的时机` 来分类，可以分为动态类型和静态类型。
@@ -1154,7 +1156,7 @@ interface Wife {
 
 #### <span id="new-language">**新语法**</span>
 
-- [declare var](#declare-var) 声明全局变量
+- [declare var let const](#declare-var) 声明全局变量
 - [declare function](#declare-function) 声明全局方法
 - [declare class](#declare-class) 声明全局类
 - [declare enum](#declare-enum) 声明全局枚举类型
@@ -1168,7 +1170,5 @@ interface Wife {
 - [declare global](#declare-global) 扩展全局变量
 - [declare module](#declare-module) 扩展模块
 - [/// <reference />](#///-reference) 三斜线指令
-
-
 
 [返回目录](#menu)

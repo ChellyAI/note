@@ -1,22 +1,42 @@
-//  npm install -g typescript
-//  npm install -g ts-node
+let wife: [string, number] = ['haha', 16];
 
-// interface Wife {
-//   name: string;
-//   age: number;
-//   [propName: string]: string | number;
-// }
+wife.push('qwer');
+console.log(wife);
 
-// interface Arr {
-//   [index: number]: number | string | boolean | Symbol;
-// }
+function haha(): number {
+  return 1;
+}
 
-// let arr: Arr = [1, '2', false, Symbol('1')];
+function hehe(x: number, y: string): null {
+  return null;
+}
 
-// function getName(firstName: string = 'cai', lastName?: string) {
-//   return firstName + ' ' + lastName;
-// }
+interface add {
+  (x: number, y: string): boolean;
+}
 
-enum Colors { Red = -2, Yellow, Green = 3, Blue};
+const qwer: add = (x: number, y: string): boolean => {
+  console.log(1);
+  return false;
+}
 
-console.log(Colors);
+interface shenmegui {
+  (x: number, ...restProps: Array<string | number | boolean>): string;
+}
+
+const rest: shenmegui = (x: number, ...restProps: Array<string | number | boolean>) => {
+  return 'haha';
+}
+
+function rewq(x: number, ...restProps: Array<string | number | boolean>) {
+  return [true, 1, 'haha'];
+}
+
+enum Wife {
+  Down,
+  Up,
+  Left,
+  Right,
+};
+
+console.log(Wife[2], Wife.Left)
