@@ -10,7 +10,7 @@
 ---
 ### <span id="qianyan">**前言**</span>
 &emsp;&emsp;HTTP缓存分为两种，一种是强缓存，另一种是协商缓存。缓存的主要作用是加快资源获取速度，提升用户体验，减少网络传输，缓解服务端压力。具体流程图如下：
-![avatar](./http缓存机制/缓存流程.png)
+![avatar](../HTTP/http缓存机制/缓存流程.png)
 
 - 如果强缓存可用，直接使用
 - 否则进入协商缓存，发送HTTP请求，服务器通过请求头中的`If-Modified-Since`或者`If-None-Match`这些条件请求字段检查资源是否更新
@@ -33,19 +33,121 @@
 
 2. **Cache-Control**
 
-&emsp;&emsp;Cache-Control是HTTP/1.1中新增的属性，在请求头和响应头中都可以使用，优先级比Expires高。与Expires相比，本质上的差异在于它不是一个具体的时间点，而是一个过期时长，例如常用值max-age如下：
-```js
-Cache-Control:max-age=3600
-```
-&emsp;&emsp;它表示的是该响应返回后，在3600秒（一小时）之内可以直接使用缓存。还有其他的属性值可以使用，如下：
-- max-age：单位是秒，缓存时间计算的方式是距离发起的时间的秒数
+&emsp;&emsp;Cache-Control是HTTP/1.1中新增的属性。
+<br />
 
-- public：响应可以被中间代理、CDN等缓存。这是因为一个请求可能要经过不同的代理器最后才到达服务器，不仅仅浏览器可以缓存数据，该设置可以让中间节点进行缓存
-- private：专用于个人的缓存，中间代理、CDN等不能缓存此响应
-- no-cache：不使用强缓存，需要与服务器验证缓存是否新鲜（即发送HTTP请求，进入协商缓存）
-- no-store：禁止使用缓存（包括协商缓存），每次都向服务器请求最新资源
-- must-revalidate：在缓存过期前可以使用，过期后必须向服务器验证
-- s-maxage：与max-age相像，区别在于s-maxage是针对代理服务器的缓存时间
+- Cache-Control缓存请求指令
+
+|指令|参数(*表示required)|说明|
+|---|--|---|
+|no-cache|无|强制向源服务器再次验证|
+|no-store|无|不缓存请求或响应的任何东西|
+|max-age=[秒]|*number|响应的最大age|
+|max-stale=([秒])|number|接收已过期的响应|
+|min-fresh=[秒]|*number|期望在指定时间内的响应仍有效|
+|no-transform|无|代理不可更改媒体类型|
+|only-if-cached|无|从缓存获取资源|
+<br />
+
+- Cache-Control缓存响应指令
+
+指令|参数(*表示required)|说明
+---|--|---
+public|无|可向任何一方提供响应的缓存
+private|可省略|仅向特定用户返回响应
+no-cache|无|强制向源服务器再次验证
+no-store|无|不缓存请求或响应的任何内容
+no-transform|无|代理不可更改媒体类型
+must-revalidate|无|可以缓存但必须再向服务器进行确认
+proxy-revalidate|无|要求中间缓存服务器对缓存有效性再进行确认
+max-age=[秒]|*number|响应的最大age
+s-maxage=[秒]|*number|公共缓存服务器响应最大age
+<br />
+
+- **表示是否能缓存的指令**
+  -  public
+  ```http
+    Cache-Control: public
+  ```
+  表明响应可以被任何对象（包括：发送请求的客户端，代理服务器，等等）缓存，即使是通常不可缓存的内容。（例如：1.该响应没有 `max-age` 指令或 `Expires` 消息头；2. 该响应对应的请求方法是 POST 。）
+
+  - private
+  ```http
+    Cache-Control: private
+  ```
+  表明响应只能被单个用户缓存，不能作为共享缓存（即代理服务器不能缓存它）。私有缓存可以缓存响应内容（例如用户本地的浏览器）
+
+  - no-cache
+  ```http
+    Cache-Control: no-cache
+  ```
+  使用 `no-cache` 的目的是为了防止从缓存中返回已过期的资源。
+
+  **客户端**发送的请求中如果包含 `no-cache` ，表示客户端不会接收缓存过的响应，要求中间的缓存服务器必须将客户端的请求转发给源服务器，源服务器进行 `ETag` 校验，如果校验通过则从缓存服务器返回资源给客户端。
+
+  **服务器**返回的响应中包含了 `no-cache` ，那么缓存服务器不能对资源进行缓存。源服务器以后也不再对缓存服务器请求中提出对资源有效性进行校验，并且禁止缓存服务器对响应资源进行缓存。
+
+  ```http
+    Cache-Control: no-cache=Location
+  ```
+  只能在响应中指定 `no-cache` 的参数。假如服务器返回的响应中，报文首部字段对 `no-cache` 指定了具体参数，那么客户端在接收这个被指定参数值的首部字段对应的报文后，就不能使用缓存，无参数值的首部字段可以使用缓存
+
+- **控制可执行缓存的对象**
+  - no-store
+  ```HTTP
+    Cache-Control: no-store
+  ```
+  使用 `no-store` ，表示该请求以及对应的响应中包含机密信息，缓存不应存储有关客户端请求或服务器响应的任何内容，即不使用任何缓存
+
+- **指定缓存期限和认证的指令**
+  - max-age
+  ```http
+    Cache-Control: max-age=3600
+  ```
+
+  **客户端**发送的请求包含 `max-age` 时，如果判定缓存资源的时间比 `max-age` 小，客户端就接收缓存资源，否则将请求转发到源服务器。如果指定 `max-age` 为0时，缓存服务器需要将请求转发到源服务器
+
+  **服务器**返回的响应中包含 `max-age` 时，缓存服务器将不再对缓存的资源做有效性判断，`max-age` 代表资源作为缓存的最长时间
+
+  在HTTP1.1中，如果遇到 `Expires` 和 `max-age` 同时存在，会优先处理 `max-age` ，忽略掉 `Expires` ，而HTTP1.0中相反，会处理前者忽略后者
+
+  - s-maxage
+  ```http
+    Cache-Control: s-maxage=3600
+  ```
+  `s-maxage` 与 `max-age` 作用相同，不同在它只适用于共享缓存，私有缓存会忽略它
+
+  - min-fresh
+  ```HTTP
+    Cache-Control: min-fresh=3600
+  ```
+  `min-fresh` 要求返回缓存时间未超过指定数值的资源
+
+  - max-stale
+  ```http
+    Cache-Control: max-stale=3600
+  ```
+  表示接收已过期的缓存。如果未指定数值，则表示无论过期多久的缓存都允许被接收，如果设置了，即使过期，只要处于设定的值之内的资源都可以被接收
+
+- **重新验证和重新加载**
+  - must-revalidate
+  ```http
+    Cache-Control: must-revalidate
+  ```
+  一旦资源过期（例如超过 `max-age` ），在成功向源服务器验证之前，缓存不能用该资源响应后续请求
+
+  - proxy-revalidate
+  ```http
+    Cache-Control: proxy-revalidate
+  ```
+  与 `must-revalidate` 作用相同，但它仅适用于共享缓存（例如代理），并被私有缓存忽略
+
+- **其他**
+  - no-transform
+  ```http
+    Cache-Control: no-transform
+  ```
+  不得对资源进行转换或转变。 `Content-Encoding、Content-Range、Content-Type` 等 `HTTP` 头不能由代理修改。
 
 3. **Pragma**
 
@@ -58,16 +160,21 @@ Cache-Control:max-age=3600
 
 1. **Last-Modified**
 
-&emsp;&emsp;即最后修改时间。
-- 在浏览器第一次给服务器发送请求后，服务器会在响应头中加上这个字段。
-- 浏览器接收到后，如果再次请求，会在请求头中携带If-Modified-Since字段，该字段的值就是服务器传来的最后修改时间
-- 服务器拿到请求头中的If-Modified-Since后，会与服务器中最后一次修改时间进行比对
+- 在浏览器第一次给服务器发送请求后，服务器会在响应头中加上 `Last-Modified` 字段，存放最后修改的时间
+- 浏览器接收到后，如果再次请求，会在请求头中携带初次请求响应头中的 `Last-Modified` 时间，放到 `If-Modified-Since` 中
+- 服务器拿到请求头中的 `If-Modified-Since` 后，会与服务器中最后一次修改时间进行比对
 - 若请求头中值小于最后修改时间，说明需要更新。于是返回新资源，流程与常规HTTP请求无异
 - 若相等，返回304并加载浏览器缓存
 
 2. **Etag**
 
 &emsp;&emsp;Etag是服务器根据当前文件内容生成的一串hash码，用于标识该资源。当服务端文件变化时，它的hash码也会随之改变。
+
+&emsp;&emsp;`ETag` 机制同时支持强校验和弱校验，弱校验只有服务器上的文件差异达到能够触发 `hash` 值后缀变化的时候，才会真正请求资源。使用的强还是弱验证，通过 `ETag` 标识符的开头是否存在 `W/`（weak） 来区分，例如：
+```
+"123456789" ——强 ETag 验证
+W/"123456789" ——弱 ETag 验证
+```
 - 服务器通过响应头把这个值给浏览器
 - 浏览器接收到后，如果再次请求，会把这个值作为If-None-Match这个字段的内容放到请求头中，发给服务器
 - 服务器接收该值后与资源的ETag进行比对
@@ -76,11 +183,11 @@ Cache-Control:max-age=3600
 
 3. **对比**
 
-&emsp;&emsp;精准度上而言，ETag比Last-Modified要好。一是因为编辑资源内容可能没有更改，这样会造成缓存失效；二是Last-Modified的感知单位时间是秒，若一秒内多次改变则无法体现出修改。
+&emsp;&emsp;**精准度上而言，ETag比Last-Modified要好**。一是因为编辑资源内容可能没有更改，这样会造成缓存失效；二是Last-Modified的感知单位时间是秒，若一秒内多次改变则无法体现出修改。
 
-&emsp;&emsp;性能上Last-Modified更好，因为只是一个时间节点，不需要根据文件内容生成hash码。
+&emsp;&emsp;**性能上Last-Modified更好**，因为只是一个时间节点，不需要根据文件内容生成hash码。
 
-&emsp;&emsp;服务器有限考虑ETag。
+&emsp;&emsp;服务器优先考虑ETag。
 
 ---
 ### <span id="qifa">**启发式缓存**</span>
@@ -95,7 +202,6 @@ response_is_fresh = max(0, (Date - Last-Modified)) % 10
 ```
 
 ---
-
 ### <span id="hcweizhi">**缓存位置**</span>
 
 &emsp;&emsp;浏览器中缓存位置一共有四种，按照优先级从高到低排序如下：
@@ -163,8 +269,11 @@ response_is_fresh = max(0, (Date - Last-Modified)) % 10
 5. Push Cache 中的缓存只能被使用一次；
 6. 浏览器可以拒绝接受已经存在的资源推送。
 
+
 ---
-### <span id='operate'>**用户操作**</span>
+### <span id="operate">**用户操作**</span>
+
+
 用户操作 | Expires / Cache-Control | Last-Modified / ETag
 ---|---|---
 地址栏回车 | 有效 | 有效
