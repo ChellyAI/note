@@ -10,3 +10,22 @@
 2. 浏览器的渲染线程和 JavaScript 线程是互斥的，所以 JavaScript 线程占据大量时间会让渲染被阻塞。
 
 **小提示**：常规屏幕刷新频率是 60 Hz，如果 JavaScript 线程花大量时间，导致实际刷新频率不到 60 Hz，用户就会感到卡顿。
+
+&emsp;&emsp;因此，reconciliation（调和） 的过程需要考虑如下问题：
+
+1. 并不是所有的 state 更新都需要立即显示出来，比如屏幕以外的部分；
+2. 并不是所有的更新优先级都相同，例如用户输入的响应优先级比通过请求填充内容的响应优先级更高；
+3. 某些情况下，高优先级的操作应该要能够打断低优先级的操作执行。
+
+### 浏览器的应对
+
+&emsp;&emsp;抛开 React Reconciliation 过程卡顿的情况，浏览器自身发展过程中也更新了一些措施来应对：
+
+- requestAnimationFrame
+- requestIdleCallback
+- web worker
+- IntersectionObserver
+
+&emsp;&emsp;它们分别称为浏览器层面的帧数控制调用、闲时调用、多线程调用、进入可视区调用。
+
+&emsp;&emsp;`requestAnimationFrame`在动画中经常用到，
