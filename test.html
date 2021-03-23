@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<style>
+  @keyframes boxAn{
+      0%{
+          left:0px
+      }
+      25%{
+          left:50px
+      }
+      50%{
+          left:100px
+      }
+      75%{
+          left: 150px;
+      }
+      100%{
+          left: 200px;
+      }
+  }
+  .box{
+      width: 400px;
+      height: 100px;
+      position: absolute;
+      background: red;
+      display: flex;
+      flex-wrap: wrap;
+      animation: boxAn 3s ease infinite alternate;
+  }
+  .box div {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      background: pink;
+  }
+</style>
+<body>
+  <div class="box">
+
+
+  </div>
+  <div class="box2">
+
+
+  </div>
+</body>
+<script>
+
+
+  let box = document.querySelector('.box');
+  let left = 1
+  let fragment = document.createDocumentFragment()
+  for(let i = 0; i < 1000; i++) {
+      let div = document.createElement('div');
+      div.innerHTML = 1;
+      box.appendChild(div)
+  }
+
+
+
+
+  function sleep(date) {
+      let flag = true;
+      const now = Date.now();
+      while (flag) {
+          if (Date.now() - now > date) {
+              flag = false;
+          }
+  }
+}
+
+
+let begin = 0
+let text = true
+function func(){
+  setTimeout(() => {
+      let divs = document.querySelectorAll('.box div')
+      let number = begin > 10 ? (begin = 0) : begin++
+      divs.forEach(element => {
+          element.textContent = number
+      });
+      sleep(500)
+      if(!(left > 500)) {
+          text = !text
+          ++left
+          func()
+      }
+  },200)
+
+
+}
+func()
+</script>
+
+</html>

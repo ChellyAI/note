@@ -15,8 +15,6 @@ const func = (num) => {
   return result;
 }
 
-// console.log(func(10000))
-
 function fib(n) {
   let fiber = {
     arg: n,
