@@ -28,7 +28,7 @@
 
 &emsp;&emsp;它们分别称为浏览器层面的帧数控制调用、闲时调用、多线程调用、进入可视区调用。
 
-&emsp;&emsp;`requestAnimationFrame`在动画中经常用到，
+&emsp;&emsp;`requestAnimationFrame`在动画中经常用到；
 
 &emsp;&emsp;`requestIdleCallback`用法：
 
@@ -50,4 +50,22 @@
 
 &emsp;&emsp;虚拟 DOM 是由 JSX 转译过来的，JSX 的入口函数是 `React.createElement`，可操作空间不大；第三层的底层 api 也非常稳定，因此可操作的地方只有第二层——内部组件层。
 
-&emsp;&emsp;React 16 将内部组件层改成了 `Fiber` 这种数据结构，因此它的架构也叫 Fiber 架构。`Fiber`节点结构中最基本的有 `return`、`child`、`sibling`，分别对应的是父节点、第一个子节点、右边的兄弟节点。通过使用 `Fiber`，对 ReactElement 进行处理，将之前简单的树结构，变成了基于单链表的树结构。
+&emsp;&emsp;React 16 将内部组件层改成了 `Fiber` 这种数据结构，它是一个对象。`Fiber`节点结构中最基本的有 `return`、`child`、`sibling`，分别对应的是父节点、第一个子节点、右边的兄弟节点。通过使用 `Fiber`，对 ReactElement 进行处理，将之前简单的树结构，变成了基于单链表的树结构。
+
+### 生命周期更新的原因
+
+&emsp;&emsp;React 将虚拟 DOM 更新过程分为了两个阶段，`reconciliation`阶段和`commit`阶段，前者可以中断，而后者不可中断，16版本针对生命周期进行了更新，就是因为reconciliation阶段对`Fiber`处理流程的更新。
+
+![new-life-cycle](./fiber/new-life-cycle.png)
+
+&emsp;&emsp;在`reconciliation`阶段主要做了以下几件事：
+
+1. 更新 state 和 props
+2. 调用生命周期钩子
+3. 父级组件中通过 render 方法，获取子组件（类组件），函数组件则直接调用获取
+4. diff，将得到的子组件与之前已经渲染的组件对比
+5. 计算出需要更新的 DOM
+
+### 过程
+
+&emsp;&emsp;页面渲染完成后，会初始化一个 fiber-tree，初始化 fiber-tree 和初始化 Virtual DOM tree 没什么区别，与此同时，React 还会维护一个 workInProgressTree 用于计算更新，完成 `reconciliation`过程。
