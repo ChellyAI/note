@@ -7,7 +7,7 @@
 ---
 ## <span id="macroandmicro">**宏任务和微任务**</span>
 
-&emsp;&emsp;宏任务（macrotask）也叫tasks，微任务（microtask）也叫jobs，JavaScript有两种队列，分别是macro task queue和micro task queue。任务将放置到对应的任务队列中。
+&emsp;&emsp;宏任务（macrotask）也叫tasks，微任务（microtask）也叫jobs。宏任务是由宿主（浏览器、Node发起的，而微任务是由 JavaScript 自身发起的。有两种队列，分别是macro task queue和micro task queue。任务将放置到对应的任务队列中。
 
 &emsp;&emsp;是宏任务的异步任务有：
 - setTimeout
