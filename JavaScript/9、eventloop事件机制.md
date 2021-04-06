@@ -1,6 +1,7 @@
 ## **目录**
 - [宏任务和微任务](#macroandmicro)
 - [浏览器的eventloop](#browser)
+- [创建一个微任务](#create)
 - [async/await](#asyncawait)
 - [练习题](#example)
 - [答案](#answer)
@@ -36,7 +37,28 @@
 6. 检查是否有 Web Workder 任务，有则执行
 7. 执行完本轮的宏任务后，回到步骤二，按顺序从宏任务队列中取出下一个宏任务放入执行栈中执行，直到宏任务和微任务的队列都清空
 
+---
 
+## <span id="create">创建一个微任务</span>
+
+&emsp;&emsp;`Window`暴露了一个方法——`queueMicrotask`，使用它就能创建一个微任务。
+
+&emsp;&emsp;用法：
+
+```javascript
+console.log('start');
+
+queueMicrotask(() => {
+    console.log('micro task');
+})
+
+console.log('end');
+
+//	结果
+//	start
+//	end
+//	micro task
+```
 
 ---
 ## <span id="asyncawait">**async/await**</span>

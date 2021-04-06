@@ -60,35 +60,23 @@
 // }
 
 // console.log(fib(6));
-class Person {
-  constructor(name) {
-    this.name = name;
-  }
+const TestPromise = require('./promise');
 
-  run = () => {
-    console.log('haha', this.name);
-  }
-}
+const p = new TestPromise((resolve, reject) => {
+  console.log('主');
+  resolve('a?')
+});
 
-class Chinese extends Person {
-  constructor(name, age) {
-    super();
-    this.name = name;
-    this.age = age;
-  }
+p.then((value) => {
+  console.log('resolve', value);
 
-  fly = function() {
-    console.log('起飞', this.name, this.age);
-  }
-}
+  return new TestPromise((resolve, reject) => {
+    resolve('other')
+  });
+}).then((value) => {
+  console.log('lianshi', value);
 
-const person = new Person('人');
-
-const caisiqi = new Chinese('caisiqi', 16);
-
-person.run();
-
-caisiqi.run();
-
-caisiqi.fly();
-
+  // return '为什么'
+}).then((v) => {
+  console.log(3, v);
+})

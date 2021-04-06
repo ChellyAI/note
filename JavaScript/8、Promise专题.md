@@ -294,4 +294,4 @@ Promise.reject(thenable)
 -----------------
 ## <span id='diy'>**Promise的手写相关**</span>
 
-
+&emsp;&emsp;具体请看第21篇的手写部分。
