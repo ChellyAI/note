@@ -2,9 +2,15 @@ const PENDING = 'pending';
 const FULFILLED = 'fulfilled';
 const REJECTED = 'rejected';
 
-class Test {
+class MyPromise {
   constructor(initialFunc) {
-    initialFunc(this.resolve, this.reject);
+    //  添加错误捕捉
+    try {
+      initialFunc(this.resolve, this.reject);
+    }
+    catch (error) {
+      this.reject(error);
+    }
   }
 
   //  当前状态，只能从 pending 变成 fulfilled 或者 rejected
@@ -48,20 +54,31 @@ class Test {
   //  传参是两个回调函数，回调函数的参数分别是保存的 value、error
   //  链式调用，就需要它返回的也是一个 promise 对象，因为返回的那个 promise 对象也有一个 then
   then(onFulfilled, onRejected) {
-    const myPromise = new Test((resolve, reject) => {
+    const myPromise = new MyPromise((resolve, reject) => {
       if (this.status === FULFILLED) {
-        const result = onFulfilled(this.value);
+        //  使用微任务来执行以下内容，因为比对result是否是当前这个promise自身
+        //  需要在它自身创建完成后才能知道是否一样。不使用微任务，将导致报错
+        //  ReferenceError: Cannot access 'myPromise' before initialization
+        queueMicrotask(() => {
+          //  添加错误捕捉
+          try {
+            const result = onFulfilled(this.value);
 
-        // if (result === myPromise) {
-        //   return reject(new Error('出错了'));
-        // }
+            if (result === myPromise) {
+              return reject(new Error('出错了'));
+            }
 
-        if (result instanceof Test) {
-          result.then(resolve, reject);
-        }
-        else {
-          resolve(result);
-        }
+            if (result instanceof MyPromise) {
+              result.then(resolve, reject);
+            }
+            else {
+              resolve(result);
+            }
+          }
+          catch (error) {
+            reject(error)
+          }
+        })
       }
       else if (this.status === REJECTED) {
         onRejected(this.error);
@@ -79,4 +96,4 @@ class Test {
   }
 }
 
-module.exports = Test;
+module.exports = MyPromise;
