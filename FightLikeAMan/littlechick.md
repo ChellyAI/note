@@ -1,0 +1,16 @@
+- promise实现原理
+- promise.all实现原理
+- 输入url发生了什么
+  - DNS域名解析
+  - 强、协商缓存
+- diff算法
+- webpack优化
+- 性能优化
+- vue双向数据绑定实现=》古老浏览器怎么实现？（不使用 Object.property）
+- 事件循环
+- CDN原理
+- node ngix 正向代理反向代理
+- router的history模式实现原理
+- vuex原理
+- git代码提交发布流程分支管理
+- http2（为什么用了http2就不使用雪碧 css sprite 图）
