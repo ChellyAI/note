@@ -70,7 +70,7 @@ http/1.1新增了五种请求方法：OPTIONS、PUT、DELETE、TRACE、CONNECT
 
 5. 浏览器通常限制URL长度在2k字节，大多数服务器最多处理64k字节的URL
 
-6. 从TCP角度来看，GET产生一个TCP数据包，浏览器会把http header和data一并发送，服务器响应200 OK并返回数据；POST产生两个TCP数据包，浏览器先发送http header，服务器响应100 continue，浏览器再发送data，服务器响应200 OK并返回数据（火狐只发送一次）
+6. **从TCP角度来看，GET产生一个TCP数据包，浏览器会把http header和data一并发送，服务器响应200 OK并返回数据；POST产生两个TCP数据包，浏览器先发送http header，服务器响应100 continue，浏览器再发送data，服务器响应200 OK并返回数据（火狐只发送一次）**
 
 7. 从幂等性的角度来看，GET是幂等的，而POST不是
 

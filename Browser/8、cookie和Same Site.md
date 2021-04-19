@@ -83,7 +83,7 @@ Set-Cookie: qwerty=219ffwef9w0f; Domain=baidu.com; Path=/; Expires=Wed; 30 Aug 2
 
 <span id="samesite">**SameSite**</span>
 
-&emsp;&emsp;该属性可以让 `Cookie` 在跨站请求时不会被发送，从而可以组织跨站请求伪造攻击（CSRF）。
+&emsp;&emsp;该属性可以让 `Cookie` 在跨站请求时不会被发送，从而可以阻止跨站请求伪造攻击（CSRF）。
 
 它的属性值有三个：
 1. **Strict** 最为严格，完全禁止第三方 `Cookie`，跨站点时任何情况下都不会发送 `Cookie`。仅允许一方请求携带 `Cookie`，即浏览器将只发送相同站点请求的 `Cookie`，即当前网页 `URL` 与请求目标 `URL` 完全一致。

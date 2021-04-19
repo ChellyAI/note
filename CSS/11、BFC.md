@@ -13,7 +13,7 @@
 &emsp;&emsp;Box 是 CSS 布局的对象和基本单位，直观点说，就是一个页面由多个 Box 组成的。元素类型和 display 属性决定了这个 Box 的类型，不同类型的 Box 会参与不同的 Formatting Context（一个决定如何渲染文档的容器），因此 Box 内的元素会以不同的方式渲染。
 
 &emsp;&emsp;让我们看看有哪些盒子：
-- block0leve box：display 属性为 block、list-item、table 的元素，会生成 block-level box，并且参与 block formatting context
+- block-leve box：display 属性为 block、list-item、table 的元素，会生成 block-level box，并且参与 block formatting context
 - inline-level box：display 属性为 inline、inline-block、inline-table 的元素，会生成 inline-level box，并且参与 inline formatting context
 - run-in box：CSS3 中才有，先不讲
 
