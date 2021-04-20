@@ -64,13 +64,7 @@ class MyPromise {
           try {
             const result = onFulfilled(this.value);
 
-            if (result === myPromise) {
-              return reject(new Error('出错了'));
-            }
-
-            if (result instanceof MyPromise) {
-              result.then(resolve, reject);
-            }
+            resolvePromise(myPromise, result, resolve, reject);
             else {
               resolve(result);
             }
@@ -81,18 +75,62 @@ class MyPromise {
         })
       }
       else if (this.status === REJECTED) {
-        onRejected(this.error);
+        queueMicrotask(() => {
+          try {
+            const result = onRejected(this.error);
+
+            resolvePromise(myPromise, result, resolve, reject);
+          }
+          catch (error) {
+            reject(error);
+          }
+        })
       }
       //  如果是异步的代码，resolve、reject 改变状态还未发生，
       //  此时 then 里的回调函数不应该如前两中情况立即执行，于是保存到各自的回调队列中
       //  当异步的 resolve、reject 执行完成后，让它们自己从回调队列中取出保存的函数并执行
       else if (this.status === PENDING) {
-        this.onFulfilledCallback.push(onFulfilled);
-        this.onRejectedCallback.push(onRejected);
+        this.onFulfilledCallback.push(() => {
+          queueMicrotask(() => {
+            try {
+              const result = onFulfilled(this.value);
+
+              resolvePromise(myPromise, result, resolve, reject);
+            }
+            catch (error) {
+              reject(error);
+            }
+          })
+        });
+        this.onRejectedCallback.push(() => {
+          queueMicrotask(() => {
+            try {
+              const result = onRejected(this.error);
+
+              resolvePromise(myPromise, result, resolve, reject);
+            }
+            catch (error) {
+              reject(error);
+            }
+          })
+        });
       }
     })
 
     return myPromise;
+  }
+}
+
+function resolvePromise(oldPromise, result, resolve, reject) {
+  if (oldPromise === result) {
+    return reject(new Error('Promise不能调用自身'))
+  }
+
+  if (result instanceof MyPromise) {
+    result.then(resolve, reject);
+  }
+  else {
+    resolve(result);
   }
 }
 
