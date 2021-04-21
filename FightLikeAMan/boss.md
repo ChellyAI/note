@@ -1,0 +1,19 @@
+- HTML5标签有哪些
+- HTML XHTML XML之类的区别
+- localStorage、sessionStorage、cookie
+- BFC
+- 响应式布局有多少了解
+- 居中的方式
+- transform、transition、animation
+- 重排和重绘
+- fetch、axios了解怎样？如何实现？
+- 改变函数this指向
+- 防抖节流
+- 继承的方式
+- 每秒打印一个数字，1、2、3、4、5，用ES5、promise、async/await分别怎么实现
+- 输入 url 到渲染（穿插缓存机制、三次握手四次挥手、CSS和js的阻塞、性能优化）
+- React 生命周期
+- hooks、class
+- 如果是你，怎么设计一个 JavaScript 的错误处理机制
+- webpack 写过 loader、plugin 吗
+- loader、plugin 作用、区别
