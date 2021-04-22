@@ -1,5 +1,6 @@
 - HTML5标签有哪些
 - HTML XHTML XML之类的区别
+- 前端跨域的方式、后端处理跨域的原理
 - localStorage、sessionStorage、cookie
 - BFC
 - 响应式布局有多少了解
@@ -7,6 +8,7 @@
 - transform、transition、animation
 - 重排和重绘
 - fetch、axios了解怎样？如何实现？
+- == 和 ===，如果是数组、对象，内部值相同能相等吗
 - 改变函数this指向
 - 防抖节流
 - 继承的方式
