@@ -222,6 +222,33 @@ class Person {
     static name = 'human';
 }
 ```
+&emsp;&emsp;用 ES5 来实现如下：（使用 babel 的在线转换可以看看）
+
+```javascript
+function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+        throw new TypeError("Cannot call a class as a function");
+    }
+}
+
+function _defineProperty(obj, key, value) {
+    if (key in obj) {
+        Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });
+    } else {
+        obj[key] = value;
+    }
+    return obj;
+}
+
+var Person = function Person() {
+    _classCallCheck(this, Person);
+}
+
+_defineProperty(Person, "name", 'human')
+```
+
+
+
 ---
 ## <span id="extends">**五、class的继承**</span>
 
