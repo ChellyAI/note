@@ -57,3 +57,33 @@ useState('god') //  读取变量名为 xxx 的 state 失败
 useEffect(handleUpdate) //  替换更新的 effect 失败
 ```
 &emsp;&emsp;React 不知道第二个 useState 的 Hook 应该返回什么。React 会以为在该组件中第二个 Hook 的调用像上次的渲染一样，对应的是 handleChange 的 effect，但并非如此。从这里开始，后面的 Hook 调用都被提前执行，导致 bug 产生。
+
+---
+
+### **forwardRef**
+
+&emsp;&emsp;虽然这并不是 hook 里面的东西，但方便起见还是放在这里。
+
+&emsp;&emsp;React.forwardRef 会创建一个 React 组件，它能够将其接受的 ref 属性转发到其组件树下的另一个组件中。在两个场景下有用：
+
+- 转发 refs 到 DOM 组件
+- 在高阶组件中转发 refs
+
+&emsp;&emsp;React.forwardRef 接受渲染函数作为参数。React 将使用 props 和 ref 作为参数来调用此函数。此函数应返回 React 节点。
+
+```javascript
+const FancyButton = React.forwardRef((props, ref) => (
+	<button ref={ref} className="FancyButton">
+     {props.children}
+	</button>
+));
+
+const ref = React.createRef();
+<FancyButton ref={ref}>
+  Click me
+</FancyButton>;
+```
+
+&emsp;&emsp;上例中，React 会将 **<FancyButton ref={ref}>** 元素的 ref 作为第二个参数传递给 React.forwardRef 函数中的渲染函数。渲染函数会将 ref 传递给 **<button ref={ref}>** 元素。
+
+&emsp;&emsp;因此，当 React 附加了 ref 属性之后，ref.current 将直接指向 **<button>** DOM 元素实例。更多内容可以看[这里](https://react-1251415695.cos-website.ap-chengdu.myqcloud.com/docs/forwarding-refs.html)
