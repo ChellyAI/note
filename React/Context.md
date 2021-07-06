@@ -2,6 +2,8 @@
 
 &emsp;&emsp;Context 设计目的是**为了共享那些对于一个组件树而言是“全局”的数据**。使用 Context 可以避免通过中间元素传递 props。
 
+[TOC]
+
 ## API
 
 ### createContext
