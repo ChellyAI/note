@@ -93,3 +93,9 @@ const ref = React.createRef();
 &emsp;&emsp;上例中，React 会将 **<FancyButton ref={ref}>** 元素的 ref 作为第二个参数传递给 React.forwardRef 函数中的渲染函数。渲染函数会将 ref 传递给 **<button ref={ref}>** 元素。
 
 &emsp;&emsp;因此，当 React 附加了 ref 属性之后，ref.current 将直接指向 **<button>** DOM 元素实例。更多内容可以看[这里](https://react-1251415695.cos-website.ap-chengdu.myqcloud.com/docs/forwarding-refs.html)
+
+---
+
+### **useImperativeHandle**
+
+&emsp;&emsp;与Ref搭配可以让函数式组件通过ref将一些方法通过实例的方式传出去给别人调用。
