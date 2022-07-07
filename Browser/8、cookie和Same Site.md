@@ -156,4 +156,4 @@ Set-Cookie: widget_session=abc123; SameSite=None; Secure
 ---
 <span id="copy">参考</span>[这里](https://github.com/mqyqingfeng/Blog/issues/157)
 
-另有[这个](#https://alexzhong22c.github.io/2020/05/22/cross-origin-cross-site/)关于Cookie跨域和跨站更详细
+另有[这个](https://alexzhong22c.github.io/2020/05/22/cross-origin-cross-site/)关于Cookie跨域和跨站更详细
