@@ -22,15 +22,15 @@ Percentages: refer to logical width of containing block
 ```react
 //	子元素并不会距离父元素的上边40px，而是父元素会有了外上边距40px
 function test() {
-    return (
-    	<div>
-        	<div
-                style={{
-					marginTop: 40,
-                }}
-            />
-        </div>
-    )
+  return (
+    <div>
+      <div
+        style={{
+          marginTop: 40,
+        }}
+      />
+    </div>
+  )
 }
 ```
 
