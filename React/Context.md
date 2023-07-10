@@ -26,7 +26,7 @@ const MyContext = React.createContext(defaultValue);
 
 &emsp;&emsp;Provider 有一个 value 属性，用于传递给消费组件。一个 Provider 可以有多个消费组件，多个 Provider 也可以嵌套使用，但内层会覆盖外层的 value。
 
-&emsp;&emsp;**当 Provider 的 value 发生变化时，它内部的所有消费组件都会重新渲染。**检测是否有变化，使用的算法是 [Object.is](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/is)。（注意：传递一个对象作为 value 时，检测变化的方式会有一些问题）
+&emsp;&emsp;**当 Provider 的 value 发生变化时，它内部的所有消费组件都会重新渲染**，检测是否有变化，使用的算法是 [Object.is](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/is)。（注意：传递一个对象作为 value 时，检测变化的方式会有一些问题）
 
 ### Class.contextType
 
