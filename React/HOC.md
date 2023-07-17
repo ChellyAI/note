@@ -92,7 +92,7 @@ function HOC(wrapComponent) {
         state = {
             name: 'caisiqi',
         }
-    
+
     	render() {
             return <wrapComponent {...this.props} {...this.state} />
         }
@@ -175,7 +175,7 @@ export default HOC(Test);
 ```javascript
 function Test(props) {
     const { name } = props;
-    
+
     return (
     	<div>
         	我的名字是
@@ -189,11 +189,11 @@ function classHOC(WrapComponent) {
         state = {
             name: 'caisiqi',
         }
-    
+
     	componentDidMount() {
             console.log('classHOC');
         }
-    	
+
     	render() {
             return <WrapComponent {...this.props} {...this.state} />
         }
@@ -203,7 +203,7 @@ function classHOC(WrapComponent) {
 function functionHOC(WrapComponent) {
     return function test(props) {
         const [name, setName] = React.useState('caisiqi');
-        
+
         return (
 			<WrapComponent {...props} name={name} />
         )
@@ -221,13 +221,13 @@ function classHOC(WrapComponent) {
         state = {
             name: 'caisiqi',
         }
-    
+
     	changeName(name) {
             this.setState({
                 name,
             });
         }
-    
+
     	render() {
             return (
                 <WrapComponent
@@ -246,7 +246,7 @@ function Test(props) {
         name,
         changeName,
     } = props;
-    
+
     return (
         <>
             <div>我叫{name}</div>
@@ -274,7 +274,7 @@ export default classHOC(Test);
 class Test extends React.Component {
     render() {
         const { setVisible } = this.props;
-        
+
         return (
         	<>
             	<img src="..." />
@@ -289,13 +289,13 @@ function renderHOC(WrapComponent) {
         state = {
             visible: true,
         }
-    
+
     	setVisible() {
             this.setState({
                 visible: !this.state.visible,
             })
         }
-    
+
     	render (
         	<>
             	<button onClick={this.setVisible.bind(this)}>挂在当前组件</button>
@@ -326,12 +326,12 @@ class Test extends React.Component {
             name,
             tryRender,
         } = this.props;
-        
+
         tryRender();
-        
+
         console.log(name + '渲染了');
     }
-    
+
     render() {
         return (
         	<img src="..." />
@@ -368,18 +368,18 @@ const tryRender = () => {
 function renderHOC(WrapComponent) {
     return function test(props) {
         const [isRender, setRender] = useState(false);
-        
+
         useEffect(() => {
             renderQueue.push(() => {
                 setRender(true);
             });
-            
+
             if (!isFirstrender) {
                 tryRender();
                 isFirstrender = true;
             }
         }, []);
-        
+
         return isRender ? <WrapComponent tryRender={tryRender} {...props} />
         	: <div>加载中</div>
     }
@@ -400,18 +400,18 @@ export default function AsyncRouter(loadRouter) {
         state = {
             Component: null,
         }
-    
+
     	componentDidMount() {
             if (this.state.Component) return;
-            
+
             loadRouter()
             	.then(module => module.default)
             	.then(Component => this.setState({Component}))
         }
-    
+
     	render() {
             const {Component} = this.state;
-            
+
             return Component ? <Component {...this.props} /> : null;
         }
     }
