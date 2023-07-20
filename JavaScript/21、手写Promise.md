@@ -2,7 +2,59 @@
 
 https://juejin.cn/post/6945319439772434469#comment
 
-```javascript
+
+## Promise A+规范测试
+
+```ssh
+npm install promises-aplus-tests -D
+```
+
+手写代码中加入 deferred
+```js
+// MyPromise.js
+
+MyPromise {
+  ......
+}
+
+MyPromise.deferred = function () {
+  var result = {};
+  result.promise = new MyPromise(function (resolve, reject) {
+    result.resolve = resolve;
+    result.reject = reject;
+  });
+
+  return result;
+}
+module.exports = MyPromise;
+```
+
+配置启动命令
+```json
+{
+  "name": "promise",
+  "version": "1.0.0",
+  "description": "my promise",
+  "main": "MyPromise.js",
+  "scripts": {
+    "test": "promises-aplus-tests MyPromise"
+  },
+  "author": "ITEM",
+  "license": "ISC",
+  "devDependencies": {
+    "promises-aplus-tests": "^2.1.2"
+  }
+}
+```
+
+开始测试
+```ssh
+npm run test
+```
+
+## 正文
+
+```js
 const PENDING = 'pending';
 const FULFILLED = 'fulfilled';
 const REJECTED = 'rejected';
